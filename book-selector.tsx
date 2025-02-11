@@ -14,7 +14,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface Book {
+interface AV {
   id: number;
   title: string;
   image: string;
@@ -28,8 +28,8 @@ interface SearchResult {
   fanza_url: string;
 }
 
-export default function BookSelector() {
-  const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
+export default function AVSelector() {
+  const [selectedAVs, setSelectedAVs] = useState<AV[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [includeTitles, setIncludeTitles] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,10 +37,10 @@ export default function BookSelector() {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showCommentModal, setShowCommentModal] = useState(false);
-  const [commentTargetBook, setCommentTargetBook] = useState<Book | null>(null);
+  const [commentTargetAV, setCommentTargetAV] = useState<AV | null>(null);
   const [commentText, setCommentText] = useState("");
 
-  const slides: Book[] = Array(10)
+  const slides: AV[] = Array(10)
     .fill(null)
     .map((_, index) => ({
       id: index + 1,
@@ -49,13 +49,13 @@ export default function BookSelector() {
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
     }));
 
-  const handleBookSelect = (book: Book) => {
-    setSelectedBooks((prev) => {
-      const isSelected = prev.find((b) => b.id === book.id);
+  const handleAVSelect = (av: AV) => {
+    setSelectedAVs((prev) => {
+      const isSelected = prev.find((a) => a.id === av.id);
       if (isSelected) {
-        return prev.filter((b) => b.id !== book.id);
+        return prev.filter((a) => a.id !== av.id);
       } else {
-        return [book];
+        return [av];
       }
     });
   };
@@ -75,60 +75,60 @@ export default function BookSelector() {
   };
 
   const handleSave = () => {
-    console.log("Selected books:", selectedBooks);
+    console.log("Selected avs:", selectedAVs);
   };
 
   const handleShare = () => {
     const baseText = `#名刺代わりのAV10選`;
     const titlesText = includeTitles
       ? "\n\n" +
-        selectedBooks.map((book, i) => `${i + 1}. ${book.title}`).join("\n")
+        selectedAVs.map((av, i) => `${i + 1}. ${av.title}`).join("\n")
       : "";
     const shareText = encodeURIComponent(
-      `${baseText}${titlesText}\n\n#10BooksMarker`
+      `${baseText}${titlesText}\n\n#名刺代わりのAV10選`
     );
     window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank");
   };
 
   const handleReset = () => {
-    setSelectedBooks([]);
+    setSelectedAVs([]);
     setCurrentSlide(0);
     setSearchTerm("");
   };
 
   // 1ページあたりの表示数を定義
-  const BOOKS_PER_PAGE = 3;
+  const AVS_PER_PAGE = 3;
 
   // 表示する本の配列を計算
   const visibleSlides = slides.slice(
-    currentSlide * BOOKS_PER_PAGE,
-    currentSlide * BOOKS_PER_PAGE + BOOKS_PER_PAGE
+    currentSlide * AVS_PER_PAGE,
+    currentSlide * AVS_PER_PAGE + AVS_PER_PAGE
   );
 
   // 最大ページ数を計算
-  const maxPage = Math.ceil(slides.length / BOOKS_PER_PAGE) - 1;
+  const maxPage = Math.ceil(slides.length / AVS_PER_PAGE) - 1;
 
   // コメント追加用の関数
-  const handleCommentClick = (e: React.MouseEvent, book: Book) => {
+  const handleCommentClick = (e: React.MouseEvent, av: AV) => {
     e.stopPropagation(); // カード選択のイベントバブリングを防ぐ
-    setCommentTargetBook(book);
-    setCommentText(book.comment || "");
+    setCommentTargetAV(av);
+    setCommentText(av.comment || "");
     setShowCommentModal(true);
   };
 
   // コメント保存用の関数
   const handleCommentSave = () => {
-    if (commentTargetBook) {
-      setSelectedBooks(prev =>
-        prev.map(book =>
-          book.id === commentTargetBook.id
-            ? { ...book, comment: commentText }
-            : book
+    if (commentTargetAV) {
+      setSelectedAVs(prev =>
+        prev.map(av =>
+          av.id === commentTargetAV.id
+            ? { ...av, comment: commentText }
+            : av
         )
       );
     }
     setShowCommentModal(false);
-    setCommentTargetBook(null);
+    setCommentTargetAV(null);
     setCommentText("");
   };
 
@@ -201,10 +201,10 @@ export default function BookSelector() {
                     <div
                       key={slide.id}
                       className="w-[calc((100%-1rem)/3)] flex-shrink-0"
-                      onClick={() => handleBookSelect(slide)}
+                      onClick={() => handleAVSelect(slide)}
                     >
                       <Card className={`p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full ${
-                        selectedBooks.find(b => b.id === slide.id) ? 'border-8 border-[#ffa31a]' : ''
+                        selectedAVs.find(b => b.id === slide.id) ? 'border-8 border-[#ffa31a]' : ''
                       }`}>
                         <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
                           <p className="text-center text-xs md:text-sm px-2 md:px-4">
@@ -259,7 +259,7 @@ export default function BookSelector() {
 
         <button
           className="w-full mb-6 py-3 bg-[#ffa31a] text-white rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#bbb] transition-colors"
-          disabled={selectedBooks.length !== 10}
+          disabled={selectedAVs.length !== 10}
           onClick={handleSave}
         >
           保存
@@ -284,7 +284,7 @@ export default function BookSelector() {
           </div>
           <button
             className="w-full py-3 bg-[#1da1f2] text-white rounded font-medium hover:bg-[#1a91da] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={selectedBooks.length !== 10}
+            disabled={selectedAVs.length !== 10}
             onClick={handleShare}
           >
             twitterでシェア
@@ -327,7 +327,7 @@ export default function BookSelector() {
                     key={result.id}
                     className="border-8 rounded-lg p-4 cursor-pointer hover:border-[#ffa31a]"
                     onClick={() => {
-                      handleBookSelect({
+                      handleAVSelect({
                         id: parseInt(result.id),
                         title: result.title,
                         image: result.image_url,
