@@ -142,11 +142,11 @@ export default function BookSelector() {
               <ChevronLeft className="h-8 w-8" />
             </button>
 
-            <div className="flex gap-4 overflow-hidden relative w-[648px]">
+            <div className="flex gap-4 overflow-hidden relative w-full max-w-[648px] min-w-[300px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
-                  className="flex gap-4"
+                  className="flex gap-2 md:gap-4 w-full"
                   initial={{ x: 100, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -100, opacity: 0 }}
@@ -161,16 +161,16 @@ export default function BookSelector() {
                   {visibleSlides.map((slide) => (
                     <div
                       key={slide.id}
-                      className="w-[200px] flex-shrink-0"
+                      className="w-[32%] min-w-[90px] flex-shrink-0"
                       onClick={() => handleBookSelect(slide)}
                     >
-                      <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                        <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-4">
-                          <p className="text-gray-400 text-center px-4">
+                      <Card className="p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                        <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
+                          <p className="text-gray-400 text-center text-xs md:text-sm px-2 md:px-4">
                             ここをタップして<br />AVを検索してください
                           </p>
                         </div>
-                        <button className="w-full py-2 px-4 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors text-sm">
+                        <button className="w-full py-1 md:py-2 px-2 md:px-4 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors text-xs md:text-sm">
                           + コメント
                         </button>
                       </Card>
@@ -182,9 +182,7 @@ export default function BookSelector() {
 
             <button
               className="text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() =>
-                setCurrentSlide((prev) => Math.min(maxPage, prev + 1))
-              }
+              onClick={() => setCurrentSlide((prev) => Math.min(maxPage, prev + 1))}
               disabled={currentSlide === maxPage}
             >
               <ChevronRight className="h-8 w-8" />
