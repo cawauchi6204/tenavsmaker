@@ -190,11 +190,11 @@ export default function BookSelector() {
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -100, opacity: 0 }}
                   transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20,
+                    type: "keyframes",
+                    stiffness: 3000,
+                    damping: 200,
                     mass: 0.8,
-                    duration: 0.5,
+                    duration: 0.1,
                   }}
                 >
                   {visibleSlides.map((slide) => (
