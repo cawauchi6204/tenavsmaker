@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AgeCheckModal from "@/components/age-check-modal";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -70,7 +70,7 @@ export default function RootLayout({
       <body className={inter.className}>
         {children}
         <AgeCheckModal />
-      <Analytics />
+        <Analytics />
       </body>
     </html>
   );
