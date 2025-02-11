@@ -297,7 +297,7 @@ export default function BookSelector() {
           リセット
         </button>
 
-        <footer className="mt-8 text-center text-sm text-[#666] border-t border-[#eee] pt-8">
+        {/* <footer className="mt-8 text-center text-sm text-[#666] border-t border-[#eee] pt-8">
           <a href="#" className="hover:text-[#333] transition-colors">
             プライバシーポリシー
           </a>
@@ -305,7 +305,7 @@ export default function BookSelector() {
           <a href="#" className="hover:text-[#333] transition-colors">
             利用規約
           </a>
-        </footer>
+        </footer> */}
 
         {/* 検索モーダル */}
         {showSearchModal && (
