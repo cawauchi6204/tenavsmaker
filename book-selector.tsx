@@ -180,16 +180,14 @@ export default function BookSelector() {
 
             <button
               className="absolute left-2 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-white/50 rounded-full p-1"
-              onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
-              disabled={currentSlide === 0}
+              onClick={() => setCurrentSlide((prev) => prev === 0 ? maxPage : prev - 1)}
             >
               <ChevronLeft className="h-8 w-8" />
             </button>
 
             <button
               className="absolute right-2 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-white/50 rounded-full p-1"
-              onClick={() => setCurrentSlide((prev) => Math.min(maxPage, prev + 1))}
-              disabled={currentSlide === maxPage}
+              onClick={() => setCurrentSlide((prev) => prev === maxPage ? 0 : prev + 1)}
             >
               <ChevronRight className="h-8 w-8" />
             </button>
