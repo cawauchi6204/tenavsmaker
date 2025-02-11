@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Book {
   id: number;
@@ -135,25 +136,42 @@ export default function BookSelector() {
               <ChevronLeft className="h-8 w-8" />
             </button>
 
-            <div className="flex gap-4 overflow-hidden">
-              {visibleSlides.map((slide) => (
-                <div
-                  key={slide.id}
-                  className="w-[200px]"
-                  onClick={() => handleBookSelect(slide)}
+            <div className="flex gap-4 overflow-hidden relative w-[648px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide}
+                  className="flex gap-4"
+                  initial={{ x: 100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -100, opacity: 0 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20,
+                    mass: 0.8,
+                    duration: 0.5
+                  }}
                 >
-                  <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className="w-full aspect-[3/4] object-cover mb-4 rounded"
-                    />
-                    <button className="w-full py-2 px-4 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors text-sm">
-                      + コメント
-                    </button>
-                  </Card>
-                </div>
-              ))}
+                  {visibleSlides.map((slide) => (
+                    <div
+                      key={slide.id}
+                      className="w-[200px] flex-shrink-0"
+                      onClick={() => handleBookSelect(slide)}
+                    >
+                      <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                        <img
+                          src={slide.image}
+                          alt={slide.title}
+                          className="w-full aspect-[3/4] object-cover mb-4 rounded"
+                        />
+                        <button className="w-full py-2 px-4 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors text-sm">
+                          + コメント
+                        </button>
+                      </Card>
+                    </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
 
             <button
