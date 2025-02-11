@@ -170,8 +170,9 @@ export default function BookSelector() {
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
             </div>
             <button
-              className="px-4 py-2 bg-[#ffa31a] text-white rounded hover:bg-[#5c7eaf] transition-colors"
+              className="px-4 py-2 bg-[#ffa31a] text-white rounded hover:bg-[#5c7eaf] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleSearch}
+              disabled={!searchTerm.trim()}
             >
               検索
             </button>
