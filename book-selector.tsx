@@ -96,8 +96,8 @@ export default function BookSelector() {
           名刺代わりのAV10選メーカー
         </h1>
 
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <span>名刺代わりのAV10選</span>
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <span>#名刺代わりのAV10選</span>
         </div>
 
         <div className="flex items-start justify-center flex-col gap-2 mb-8">
