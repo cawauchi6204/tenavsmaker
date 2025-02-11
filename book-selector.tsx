@@ -164,7 +164,8 @@ export default function BookSelector() {
                 placeholder={
                   searchType === "title" ? "タイトルで探す" : "女優名で探す"
                 }
-                className="pl-8 bg-white border-[#ccc] text-[#666] hover:bg-gray-50"
+                className="pl-8 bg-white border-[#ccc] text-[#666] hover:bg-gray-50 text-base"
+                style={{ fontSize: '16px' }}
               />
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
             </div>
