@@ -1,56 +1,25 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import AgeCheckModal from "@/components/age-check-modal";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tenavsmaker.vercel.app'),
-  title: {
-    default: "名刺代わりのAV10選メーカー",
-    template: "%s | 名刺代わりのAV10選メーカー"
-  },
-  description: "あなたの好きなAVを10本選んでシェアしよう",
-  openGraph: {
-    title: "名刺代わりのAV10選メーカー",
-    description: "あなたの好きなAVを10本選んでシェアしよう",
-    images: [
-      {
-        url: "/AV.png",
-        width: 1200,
-        height: 630,
-        alt: "名刺代わりのAV10選メーカー",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "名刺代わりのAV10選メーカー",
-    description: "あなたの好きなAVを10本選んでシェアしよう",
-    images: ["/AV.png"],
-  },
+  title: "名刺代わりのAV10選メーカー",
+  description: "あなたの好きなAVを10本選んで共有できます。",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="ja">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={inter.className}>
         {children}
+        <AgeCheckModal />
       </body>
     </html>
   );
