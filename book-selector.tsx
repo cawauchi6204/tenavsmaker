@@ -27,26 +27,14 @@ export default function BookSelector() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
 
-  const slides: Book[] = [
-    {
-      id: 1,
-      title: "図解入門 TCP/IP 第2版",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
-    },
-    {
-      id: 2,
+  const slides: Book[] = Array(10)
+    .fill(null)
+    .map((_, index) => ({
+      id: index + 1,
       title: "ここをクリックして、本を検索してください",
       image:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
-    },
-    {
-      id: 3,
-      title: "ここをクリックして、本を検索してください",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
-    },
-  ];
+    }));
 
   const handleBookSelect = (book: Book) => {
     if (
@@ -88,6 +76,18 @@ export default function BookSelector() {
     setSearchTerm("");
   };
 
+  // 1ページあたりの表示数を定義
+  const BOOKS_PER_PAGE = 3;
+
+  // 表示する本の配列を計算
+  const visibleSlides = slides.slice(
+    currentSlide * BOOKS_PER_PAGE,
+    currentSlide * BOOKS_PER_PAGE + BOOKS_PER_PAGE
+  );
+
+  // 最大ページ数を計算
+  const maxPage = Math.ceil(slides.length / BOOKS_PER_PAGE) - 1;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#e6f3ff] to-white">
       <div className="max-w-[800px] mx-auto px-4 py-8">
@@ -108,7 +108,7 @@ export default function BookSelector() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="title">タイトル</SelectItem>
-              <SelectItem value="author">著者</SelectItem>
+              <SelectItem value="actress">女優名</SelectItem>
             </SelectContent>
           </Select>
           <span className="text-[#666]">で探す</span>
@@ -116,7 +116,9 @@ export default function BookSelector() {
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="タイトルで探す"
+              placeholder={
+                searchType === "title" ? "タイトルで探す" : "女優名で探す"
+              }
               className="pl-8 bg-white border-[#ccc] text-[#666] hover:bg-gray-50"
             />
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
@@ -134,12 +136,10 @@ export default function BookSelector() {
             </button>
 
             <div className="flex gap-4 overflow-hidden">
-              {slides.map((slide, index) => (
+              {visibleSlides.map((slide) => (
                 <div
                   key={slide.id}
-                  className={`w-[200px] transition-all ${
-                    index === currentSlide ? "opacity-100" : "opacity-50"
-                  }`}
+                  className="w-[200px]"
                   onClick={() => handleBookSelect(slide)}
                 >
                   <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
@@ -159,16 +159,16 @@ export default function BookSelector() {
             <button
               className="text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() =>
-                setCurrentSlide((prev) => Math.min(slides.length - 1, prev + 1))
+                setCurrentSlide((prev) => Math.min(maxPage, prev + 1))
               }
-              disabled={currentSlide === slides.length - 1}
+              disabled={currentSlide === maxPage}
             >
               <ChevronRight className="h-8 w-8" />
             </button>
           </div>
 
           <div className="flex justify-center gap-2 mt-4">
-            {slides.map((_, index) => (
+            {Array.from({ length: maxPage + 1 }).map((_, index) => (
               <div
                 key={index}
                 className={`h-2 w-2 rounded-full transition-colors ${
