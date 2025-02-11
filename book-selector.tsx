@@ -90,16 +90,14 @@ export default function BookSelector() {
   const maxPage = Math.ceil(slides.length / BOOKS_PER_PAGE) - 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#e6f3ff] to-white">
+    <div className="min-h-screen">
       <div className="max-w-[800px] mx-auto px-4 py-8">
-        <h1 className="text-2xl text-center mb-12 text-[#333]">
+        <h1 className="text-2xl text-center mb-4">
           名刺代わりのAV10選メーカー
         </h1>
 
         <div className="flex items-center justify-center gap-2 mb-8">
-          <span className="text-[#666]">#名刺代わりの</span>
-          AV
-          <span className="text-[#666]">10選</span>
+          <span>名刺代わりのAV10選</span>
         </div>
 
         <div className="flex items-start justify-center flex-col gap-2 mb-8">
@@ -113,7 +111,7 @@ export default function BookSelector() {
                 <SelectItem value="actress">女優名</SelectItem>
               </SelectContent>
             </Select>
-            <span className="text-[#666]">で探す</span>
+            <span>で探す</span>
           </div>
           <div className="w-full flex items-center gap-2">
             <div className="relative flex-1 max-w-[400px]">
@@ -128,7 +126,7 @@ export default function BookSelector() {
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
             </div>
             <button
-              className="px-4 py-2 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors"
+              className="px-4 py-2 bg-[#ffa31a] text-white rounded hover:bg-[#5c7eaf] transition-colors"
               onClick={() => console.log("Search:", searchTerm)}
             >
               検索
@@ -162,13 +160,13 @@ export default function BookSelector() {
                     >
                       <Card className="p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full">
                         <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
-                          <p className="text-gray-400 text-center text-xs md:text-sm px-2 md:px-4">
+                          <p className="text-center text-xs md:text-sm px-2 md:px-4">
                             ここをタップして
                             <br />
                             AVを検索してください
                           </p>
                         </div>
-                        <button className="w-full py-1 md:py-2 px-2 md:px-4 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors text-xs md:text-sm">
+                        <button className="w-full py-1 md:py-2 px-2 bg-[#808080] md:px-4 text-white rounded transition-colors text-xs md:text-sm">
                           + コメント
                         </button>
                       </Card>
@@ -179,15 +177,19 @@ export default function BookSelector() {
             </div>
 
             <button
-              className="absolute left-2 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-white/50 rounded-full p-1"
+              className="absolute left-2 top-1/2 -translate-y-1/2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#ffa31a] rounded-full p-1"
               onClick={() => setCurrentSlide((prev) => prev === 0 ? maxPage : prev - 1)}
             >
               <ChevronLeft className="h-8 w-8" />
             </button>
 
             <button
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-white/50 rounded-full p-1"
-              onClick={() => setCurrentSlide((prev) => prev === maxPage ? 0 : prev + 1)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#ffa31a] rounded-full p-1"
+              onClick={() =>
+                setCurrentSlide((prev) =>
+                  prev === maxPage ? 0 : prev + 1
+                )
+              }
             >
               <ChevronRight className="h-8 w-8" />
             </button>
@@ -210,7 +212,7 @@ export default function BookSelector() {
         </div>
 
         <button
-          className="w-full mb-6 py-3 bg-[#ccc] text-white rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#bbb] transition-colors"
+          className="w-full mb-6 py-3 bg-[#ffa31a] text-white rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#bbb] transition-colors"
           disabled={selectedBooks.length !== 10}
           onClick={handleSave}
         >
@@ -218,7 +220,7 @@ export default function BookSelector() {
         </button>
 
         <div className="text-center mb-6">
-          <p className="text-[#666] mb-4">
+          <p className="mb-4">
             保存後に、シェアできるようになります!
           </p>
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -228,9 +230,9 @@ export default function BookSelector() {
               onCheckedChange={(checked) =>
                 setIncludeTitles(checked as boolean)
               }
-              className="border-[#ccc] data-[state=checked]:bg-[#6c8ebf] data-[state=checked]:border-[#6c8ebf]"
+              className="border-[#ccc] bg-white"
             />
-            <label htmlFor="include-titles" className="text-sm text-[#666]">
+            <label htmlFor="include-titles" className="text-sm">
               ツイートにAVのタイトルを含める
             </label>
           </div>

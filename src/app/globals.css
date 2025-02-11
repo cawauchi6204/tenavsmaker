@@ -74,5 +74,16 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #000000;
+    color: #ffffff;
+    h1 {
+      color: #ffa31a;
+      font-weight: bold;
+    }
+    button {
+      background-color: #ffa31a;
+      color: #ffffff;
+      font-weight: bold;
+    }
   }
 }

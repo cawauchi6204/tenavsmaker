@@ -7,12 +7,8 @@ export default async function Home() {
   console.log("Retrieved packages:", packages);
 
   const BookSelector = dynamic(() => import("../../book-selector"), {
-    ssr: false
+    ssr: false,
   });
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <BookSelector />
-    </div>
-  );
+  return <BookSelector />;
 }
