@@ -74,10 +74,6 @@ export default function AVSelector() {
     }
   };
 
-  const handleSave = () => {
-    console.log("Selected avs:", selectedAVs);
-  };
-
   const handleShare = () => {
     const baseText = `#名刺代わりのAV10選`;
     const titlesText = includeTitles
@@ -257,18 +253,7 @@ export default function AVSelector() {
           </div>
         </div>
 
-        <button
-          className="w-full mb-6 py-3 bg-[#ffa31a] text-white rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#bbb] transition-colors"
-          disabled={selectedAVs.length !== 10}
-          onClick={handleSave}
-        >
-          保存
-        </button>
-
         <div className="text-center mb-6">
-          <p className="mb-4">
-            保存後に、シェアできるようになります!
-          </p>
           <div className="flex items-center justify-center gap-2 mb-4">
             <Checkbox
               id="include-titles"
