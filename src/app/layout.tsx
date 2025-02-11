@@ -14,7 +14,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "名刺代わりのAV10選メーカー",
+  metadataBase: new URL('https://tenavsmaker.vercel.app'),
+  title: {
+    default: "名刺代わりのAV10選メーカー",
+    template: "%s | 名刺代わりのAV10選メーカー"
+  },
   description: "あなたの好きなAVを10本選んでシェアしよう",
   openGraph: {
     title: "名刺代わりのAV10選メーカー",
