@@ -32,7 +32,7 @@ export default function BookSelector() {
     .fill(null)
     .map((_, index) => ({
       id: index + 1,
-      title: "ここをクリックして、本を検索してください",
+      title: "ここをタップしてAVを検索してください",
       image:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
     }));
@@ -124,6 +124,12 @@ export default function BookSelector() {
             />
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
           </div>
+          <button
+            className="px-4 py-2 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors"
+            onClick={() => console.log('Search:', searchTerm)}
+          >
+            検索
+          </button>
         </div>
 
         <div className="relative mb-8">
@@ -159,11 +165,11 @@ export default function BookSelector() {
                       onClick={() => handleBookSelect(slide)}
                     >
                       <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                        <img
-                          src={slide.image}
-                          alt={slide.title}
-                          className="w-full aspect-[3/4] object-cover mb-4 rounded"
-                        />
+                        <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-4">
+                          <p className="text-gray-400 text-center px-4">
+                            ここをタップして<br />AVを検索してください
+                          </p>
+                        </div>
                         <button className="w-full py-2 px-4 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors text-sm">
                           + コメント
                         </button>
