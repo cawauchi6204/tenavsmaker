@@ -102,34 +102,38 @@ export default function BookSelector() {
           <span className="text-[#666]">10選</span>
         </div>
 
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Select value={searchType} onValueChange={setSearchType}>
-            <SelectTrigger className="w-[100px] bg-white border-[#ccc] text-[#666] hover:bg-gray-50">
-              <SelectValue placeholder="タイトル" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="title">タイトル</SelectItem>
-              <SelectItem value="actress">女優名</SelectItem>
-            </SelectContent>
-          </Select>
-          <span className="text-[#666]">で探す</span>
-          <div className="relative flex-1 max-w-[400px]">
-            <Input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={
-                searchType === "title" ? "タイトルで探す" : "女優名で探す"
-              }
-              className="pl-8 bg-white border-[#ccc] text-[#666] hover:bg-gray-50"
-            />
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
+        <div className="flex items-start justify-center flex-col gap-2 mb-8">
+          <div className="flex items-center gap-2">
+            <Select value={searchType} onValueChange={setSearchType}>
+              <SelectTrigger className="w-[100px] bg-white border-[#ccc] text-[#666] hover:bg-gray-50">
+                <SelectValue placeholder="タイトル" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="title">タイトル</SelectItem>
+                <SelectItem value="actress">女優名</SelectItem>
+              </SelectContent>
+            </Select>
+            <span className="text-[#666]">で探す</span>
           </div>
-          <button
-            className="px-4 py-2 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors"
-            onClick={() => console.log('Search:', searchTerm)}
-          >
-            検索
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1 max-w-[400px]">
+              <Input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder={
+                  searchType === "title" ? "タイトルで探す" : "女優名で探す"
+                }
+                className="pl-8 bg-white border-[#ccc] text-[#666] hover:bg-gray-50"
+              />
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
+            </div>
+            <button
+              className="px-4 py-2 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors"
+              onClick={() => console.log("Search:", searchTerm)}
+            >
+              検索
+            </button>
+          </div>
         </div>
 
         <div className="relative mb-8">
@@ -155,7 +159,7 @@ export default function BookSelector() {
                     stiffness: 300,
                     damping: 20,
                     mass: 0.8,
-                    duration: 0.5
+                    duration: 0.5,
                   }}
                 >
                   {visibleSlides.map((slide) => (
@@ -167,7 +171,9 @@ export default function BookSelector() {
                       <Card className="p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                         <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
                           <p className="text-gray-400 text-center text-xs md:text-sm px-2 md:px-4">
-                            ここをタップして<br />AVを検索してください
+                            ここをタップして
+                            <br />
+                            AVを検索してください
                           </p>
                         </div>
                         <button className="w-full py-1 md:py-2 px-2 md:px-4 bg-[#6c8ebf] text-white rounded hover:bg-[#5c7eaf] transition-colors text-xs md:text-sm">
@@ -182,7 +188,9 @@ export default function BookSelector() {
 
             <button
               className="text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => setCurrentSlide((prev) => Math.min(maxPage, prev + 1))}
+              onClick={() =>
+                setCurrentSlide((prev) => Math.min(maxPage, prev + 1))
+              }
               disabled={currentSlide === maxPage}
             >
               <ChevronRight className="h-8 w-8" />
