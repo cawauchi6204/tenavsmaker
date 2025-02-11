@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,12 +21,24 @@ interface Book {
   comment?: string;
 }
 
+interface SearchResult {
+  id: string;
+  title: string;
+  image_url: string;
+  fanza_url: string;
+}
+
 export default function BookSelector() {
   const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [includeTitles, setIncludeTitles] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [commentTargetBook, setCommentTargetBook] = useState<Book | null>(null);
+  const [commentText, setCommentText] = useState("");
 
   const slides: Book[] = Array(10)
     .fill(null)
@@ -38,21 +50,28 @@ export default function BookSelector() {
     }));
 
   const handleBookSelect = (book: Book) => {
-    if (
-      selectedBooks.length >= 10 &&
-      !selectedBooks.find((b) => b.id === book.id)
-    ) {
-      return;
-    }
-
     setSelectedBooks((prev) => {
       const isSelected = prev.find((b) => b.id === book.id);
       if (isSelected) {
         return prev.filter((b) => b.id !== book.id);
       } else {
-        return [...prev, book];
+        return [book];
       }
     });
+  };
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch('/api/search?' + new URLSearchParams({
+        term: searchTerm,
+        type: searchType
+      }));
+      const data = await response.json();
+      setSearchResults(data);
+      setShowSearchModal(true);
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
   };
 
   const handleSave = () => {
@@ -88,6 +107,30 @@ export default function BookSelector() {
 
   // 最大ページ数を計算
   const maxPage = Math.ceil(slides.length / BOOKS_PER_PAGE) - 1;
+
+  // コメント追加用の関数
+  const handleCommentClick = (e: React.MouseEvent, book: Book) => {
+    e.stopPropagation(); // カード選択のイベントバブリングを防ぐ
+    setCommentTargetBook(book);
+    setCommentText(book.comment || "");
+    setShowCommentModal(true);
+  };
+
+  // コメント保存用の関数
+  const handleCommentSave = () => {
+    if (commentTargetBook) {
+      setSelectedBooks(prev =>
+        prev.map(book =>
+          book.id === commentTargetBook.id
+            ? { ...book, comment: commentText }
+            : book
+        )
+      );
+    }
+    setShowCommentModal(false);
+    setCommentTargetBook(null);
+    setCommentText("");
+  };
 
   return (
     <div className="min-h-screen">
@@ -127,7 +170,7 @@ export default function BookSelector() {
             </div>
             <button
               className="px-4 py-2 bg-[#ffa31a] text-white rounded hover:bg-[#5c7eaf] transition-colors"
-              onClick={() => console.log("Search:", searchTerm)}
+              onClick={handleSearch}
             >
               検索
             </button>
@@ -158,7 +201,9 @@ export default function BookSelector() {
                       className="w-[calc((100%-1rem)/3)] flex-shrink-0"
                       onClick={() => handleBookSelect(slide)}
                     >
-                      <Card className="p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full">
+                      <Card className={`p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full ${
+                        selectedBooks.find(b => b.id === slide.id) ? 'border-8 border-[#ffa31a]' : ''
+                      }`}>
                         <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
                           <p className="text-center text-xs md:text-sm px-2 md:px-4">
                             ここをタップして
@@ -166,8 +211,11 @@ export default function BookSelector() {
                             AVを検索してください
                           </p>
                         </div>
-                        <button className="w-full py-1 md:py-2 px-2 bg-[#808080] md:px-4 text-white rounded transition-colors text-xs md:text-sm">
-                          + コメント
+                        <button 
+                          className="w-full py-1 md:py-2 px-2 bg-[#808080] md:px-4 text-white rounded transition-colors text-xs md:text-sm"
+                          onClick={(e) => handleCommentClick(e, slide)}
+                        >
+                          {slide.comment ? "コメントを編集" : "+ コメント"}
                         </button>
                       </Card>
                     </div>
@@ -205,10 +253,6 @@ export default function BookSelector() {
               />
             ))}
           </div>
-        </div>
-
-        <div className="text-center text-[#ff4444] mb-6">
-          まだAVが全て選ばれていません。(1/10)
         </div>
 
         <button
@@ -261,6 +305,82 @@ export default function BookSelector() {
             利用規約
           </a>
         </footer>
+
+        {/* 検索モーダル */}
+        {showSearchModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">検索結果</h2>
+                <button
+                  onClick={() => setShowSearchModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {searchResults.map((result) => (
+                  <div
+                    key={result.id}
+                    className="border-8 rounded-lg p-4 cursor-pointer hover:border-[#ffa31a]"
+                    onClick={() => {
+                      handleBookSelect({
+                        id: parseInt(result.id),
+                        title: result.title,
+                        image: result.image_url,
+                      });
+                    }}
+                  >
+                    <img
+                      src={result.image_url}
+                      alt={result.title}
+                      className="w-full aspect-[3/4] object-cover rounded mb-2"
+                    />
+                    <p className="text-sm">{result.title}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* コメント入力モーダル */}
+        {showCommentModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">コメントを入力</h2>
+                <button
+                  onClick={() => setShowCommentModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <textarea
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                className="w-full h-32 p-2 border border-gray-300 rounded mb-4 resize-none"
+                placeholder="コメントを入力してください"
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowCommentModal(false)}
+                  className="px-4 py-2 text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={handleCommentSave}
+                  className="px-4 py-2 bg-[#ffa31a] text-white rounded hover:bg-[#ff9900]"
+                >
+                  保存
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
