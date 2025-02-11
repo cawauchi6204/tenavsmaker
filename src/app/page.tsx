@@ -6,9 +6,9 @@ export default async function Home() {
   const packages = await getPackages();
   console.log("Retrieved packages:", packages);
 
-  const BookSelector = dynamic(() => import("../../book-selector"), {
+  const AVSelector = dynamic(() => import("../../av-selector"), {
     ssr: false,
   });
 
-  return <BookSelector />;
+  return <AVSelector />;
 }
