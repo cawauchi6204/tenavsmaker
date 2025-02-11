@@ -137,16 +137,8 @@ export default function BookSelector() {
         </div>
 
         <div className="relative mb-8">
-          <div className="flex justify-center items-center gap-4">
-            <button
-              className="text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
-              disabled={currentSlide === 0}
-            >
-              <ChevronLeft className="h-8 w-8" />
-            </button>
-
-            <div className="flex gap-4 overflow-hidden relative w-full max-w-[648px] min-w-[300px]">
+          <div className="relative w-full">
+            <div className="flex gap-4 overflow-hidden w-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
@@ -165,7 +157,7 @@ export default function BookSelector() {
                   {visibleSlides.map((slide) => (
                     <div
                       key={slide.id}
-                      className="w-[32%] min-w-[90px] flex-shrink-0"
+                      className="w-full flex-1"
                       onClick={() => handleBookSelect(slide)}
                     >
                       <Card className="p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
@@ -187,10 +179,16 @@ export default function BookSelector() {
             </div>
 
             <button
-              className="text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() =>
-                setCurrentSlide((prev) => Math.min(maxPage, prev + 1))
-              }
+              className="absolute left-2 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-white/50 rounded-full p-1"
+              onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
+              disabled={currentSlide === 0}
+            >
+              <ChevronLeft className="h-8 w-8" />
+            </button>
+
+            <button
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-white/50 rounded-full p-1"
+              onClick={() => setCurrentSlide((prev) => Math.min(maxPage, prev + 1))}
               disabled={currentSlide === maxPage}
             >
               <ChevronRight className="h-8 w-8" />
