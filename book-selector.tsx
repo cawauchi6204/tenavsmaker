@@ -115,7 +115,7 @@ export default function BookSelector() {
             </Select>
             <span className="text-[#666]">で探す</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="w-full flex items-center gap-2">
             <div className="relative flex-1 max-w-[400px]">
               <Input
                 value={searchTerm}
