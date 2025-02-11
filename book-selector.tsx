@@ -138,11 +138,11 @@ export default function BookSelector() {
 
         <div className="relative mb-8">
           <div className="relative w-full">
-            <div className="flex gap-4 overflow-hidden w-full">
+            <div className="flex overflow-hidden w-full px-1">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
-                  className="flex gap-2 md:gap-4 w-full"
+                  className="flex gap-2 w-full"
                   initial={{ x: 100, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -100, opacity: 0 }}
@@ -157,10 +157,10 @@ export default function BookSelector() {
                   {visibleSlides.map((slide) => (
                     <div
                       key={slide.id}
-                      className="w-full flex-1"
+                      className="w-[calc((100%-1rem)/3)] flex-shrink-0"
                       onClick={() => handleBookSelect(slide)}
                     >
-                      <Card className="p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                      <Card className="p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full">
                         <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
                           <p className="text-gray-400 text-center text-xs md:text-sm px-2 md:px-4">
                             ここをタップして
