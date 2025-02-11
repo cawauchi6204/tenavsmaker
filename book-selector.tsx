@@ -1,97 +1,103 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, ChevronLeft, ChevronRight } from "lucide-react"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
+import { useState } from "react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Book {
-  id: number
-  title: string
-  image: string
-  comment?: string
+  id: number;
+  title: string;
+  image: string;
+  comment?: string;
 }
 
 export default function BookSelector() {
-  const [selectedBooks, setSelectedBooks] = useState<Book[]>([])
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [includeTitles, setIncludeTitles] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [searchType, setSearchType] = useState("title")
-  const [category, setCategory] = useState("novel")
+  const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [includeTitles, setIncludeTitles] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("title");
 
   const slides: Book[] = [
     {
       id: 1,
       title: "図解入門 TCP/IP 第2版",
-      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
+      image:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
     },
     {
       id: 2,
       title: "ここをクリックして、本を検索してください",
-      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
+      image:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
     },
     {
       id: 3,
       title: "ここをクリックして、本を検索してください",
-      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
+      image:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
     },
-  ]
+  ];
 
   const handleBookSelect = (book: Book) => {
-    if (selectedBooks.length >= 10 && !selectedBooks.find(b => b.id === book.id)) {
-      return
+    if (
+      selectedBooks.length >= 10 &&
+      !selectedBooks.find((b) => b.id === book.id)
+    ) {
+      return;
     }
 
-    setSelectedBooks(prev => {
-      const isSelected = prev.find(b => b.id === book.id)
+    setSelectedBooks((prev) => {
+      const isSelected = prev.find((b) => b.id === book.id);
       if (isSelected) {
-        return prev.filter(b => b.id !== book.id)
+        return prev.filter((b) => b.id !== book.id);
       } else {
-        return [...prev, book]
+        return [...prev, book];
       }
-    })
-  }
+    });
+  };
 
   const handleSave = () => {
-    console.log("Selected books:", selectedBooks)
-  }
+    console.log("Selected books:", selectedBooks);
+  };
 
   const handleShare = () => {
-    const baseText = `#名刺代わりの${category}10選`
+    const baseText = `#名刺代わりのAV10選`;
     const titlesText = includeTitles
-      ? "\n\n" + selectedBooks.map((book, i) => `${i + 1}. ${book.title}`).join("\n")
-      : ""
-    const shareText = encodeURIComponent(`${baseText}${titlesText}\n\n#10BooksMarker`)
-    window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank")
-  }
+      ? "\n\n" +
+        selectedBooks.map((book, i) => `${i + 1}. ${book.title}`).join("\n")
+      : "";
+    const shareText = encodeURIComponent(
+      `${baseText}${titlesText}\n\n#10BooksMarker`
+    );
+    window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank");
+  };
 
   const handleReset = () => {
-    setSelectedBooks([])
-    setCurrentSlide(0)
-    setSearchTerm("")
-  }
+    setSelectedBooks([]);
+    setCurrentSlide(0);
+    setSearchTerm("");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#e6f3ff] to-white">
       <div className="max-w-[800px] mx-auto px-4 py-8">
-        <h1 className="text-2xl text-center mb-12 text-[#333]">名刺代わりの10冊メーカー</h1>
+        <h1 className="text-2xl text-center mb-12 text-[#333]">
+          名刺代わりのAV10選メーカー
+        </h1>
 
         <div className="flex items-center justify-center gap-2 mb-8">
           <span className="text-[#666]">#名刺代わりの</span>
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-[100px] bg-white border-[#ccc] text-[#666] hover:bg-gray-50">
-              <SelectValue placeholder="小説" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="novel">小説</SelectItem>
-              <SelectItem value="manga">漫画</SelectItem>
-              <SelectItem value="business">ビジネス</SelectItem>
-              <SelectItem value="tech">技術書</SelectItem>
-            </SelectContent>
-          </Select>
+          AV
           <span className="text-[#666]">10選</span>
         </div>
 
@@ -152,7 +158,9 @@ export default function BookSelector() {
 
             <button
               className="text-[#666] hover:text-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => setCurrentSlide((prev) => Math.min(slides.length - 1, prev + 1))}
+              onClick={() =>
+                setCurrentSlide((prev) => Math.min(slides.length - 1, prev + 1))
+              }
               disabled={currentSlide === slides.length - 1}
             >
               <ChevronRight className="h-8 w-8" />
@@ -171,15 +179,8 @@ export default function BookSelector() {
           </div>
         </div>
 
-        <div className="text-center mb-6">
-          <p className="text-[#666] text-sm mb-1">楽天、Amazonのアフィリエイトを設定できます👌</p>
-          <button className="w-full max-w-[400px] py-2 px-4 bg-white border border-[#ccc] text-[#666] rounded hover:bg-gray-50 transition-colors">
-            アフィリエイトIDを設定
-          </button>
-        </div>
-
         <div className="text-center text-[#ff4444] mb-6">
-          まだ本が10冊選ばれていません。(1/10)
+          まだAVが全て選ばれていません。(1/10)
         </div>
 
         <button
@@ -191,16 +192,20 @@ export default function BookSelector() {
         </button>
 
         <div className="text-center mb-6">
-          <p className="text-[#666] mb-4">保存後に、シェアできるようになります!</p>
+          <p className="text-[#666] mb-4">
+            保存後に、シェアできるようになります!
+          </p>
           <div className="flex items-center justify-center gap-2 mb-4">
             <Checkbox
               id="include-titles"
               checked={includeTitles}
-              onCheckedChange={(checked) => setIncludeTitles(checked as boolean)}
+              onCheckedChange={(checked) =>
+                setIncludeTitles(checked as boolean)
+              }
               className="border-[#ccc] data-[state=checked]:bg-[#6c8ebf] data-[state=checked]:border-[#6c8ebf]"
             />
             <label htmlFor="include-titles" className="text-sm text-[#666]">
-              ツイートに本のタイトルを含める
+              ツイートにAVのタイトルを含める
             </label>
           </div>
           <button
@@ -230,5 +235,5 @@ export default function BookSelector() {
         </footer>
       </div>
     </div>
-  )
+  );
 }
