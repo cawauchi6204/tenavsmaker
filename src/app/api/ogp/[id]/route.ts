@@ -26,14 +26,21 @@ export async function GET(
     const selection = await getSelection(params.id);
 
     // データの存在確認をより厳密に
-    if (!items || items.length === 0) {
-      console.error("No items found:", { items });
-      return new NextResponse("No items found", { status: 404 });
+    if (!items || items.length === 0 || !Array.isArray(items)) {
+      console.error("Invalid items:", { items });
+      return new NextResponse("Invalid items", { status: 404 });
     }
 
-    if (!selection || !selection.title) {
-      console.error("No selection or title found:", { selection });
-      return new NextResponse("No selection found", { status: 404 });
+    if (!selection?.title?.trim()) {
+      console.error("Invalid selection or title:", { selection });
+      return new NextResponse("Invalid selection", { status: 404 });
+    }
+
+    // 画像URLの事前検証
+    const validItems = items.filter(item => item && typeof item.image_url === 'string' && item.image_url.trim());
+    if (validItems.length === 0) {
+      console.error("No valid image URLs found");
+      return new NextResponse("No valid images", { status: 400 });
     }
 
     // グリッドサイズを計算
@@ -60,15 +67,8 @@ export async function GET(
 
     // Load and draw images
     await Promise.all(
-      items.map(async (item, index) => {
+      validItems.map(async (item, index) => {
         try {
-          // 画像URLの検証を追加
-          if (!item.image_url) {
-            console.error(`No image URL for item ${index}`);
-            return;
-          }
-
-          console.log(`Loading image ${index}: ${item.image_url}`); // デバッグログ
           const image = await loadImage(item.image_url);
           const row = Math.floor(index / GRID_COLS);
           const col = index % GRID_COLS;
@@ -96,10 +96,14 @@ export async function GET(
           console.log(`Successfully drew image ${index}`); // デバッグログ
         } catch (error) {
           console.error(`Error loading image ${index}:`, error);
-          // エラー時のフォールバック処理を追加
+          // エラー発生時もプロミスを解決する
+          return null;
         }
       })
-    );
+    ).catch(error => {
+      console.error("Error in Promise.all:", error);
+      throw error;
+    });
 
     // Convert canvas to buffer
     const buffer = canvas.toBuffer("image/png");
@@ -113,16 +117,14 @@ export async function GET(
     });
   } catch (error) {
     console.error("Error generating OGP image:", error);
-    if (error instanceof Error) {
-      return new NextResponse(JSON.stringify({ error: error.message }), {
+    return new NextResponse(
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.stack : undefined 
+      }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      });
-    } else {
-      return new NextResponse(JSON.stringify({ error: "Unknown error" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+      }
+    );
   }
 }
