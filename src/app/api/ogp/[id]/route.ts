@@ -22,12 +22,12 @@ export async function GET(
     const ctx = canvas.getContext("2d");
 
     // Set background
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = "#ffa31a";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     // Draw title
     ctx.fillStyle = "#FFFFFF";
-    ctx.font = "bold 40px sans-serif";
+    ctx.font = "bold 40px";
     ctx.textAlign = "center";
     ctx.fillText(selection.title, WIDTH / 2, TITLE_HEIGHT);
 
