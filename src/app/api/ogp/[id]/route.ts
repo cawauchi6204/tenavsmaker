@@ -25,10 +25,15 @@ export async function GET(
     const items = await getSelectionItems(params.id);
     const selection = await getSelection(params.id);
 
-    // データの存在確認を追加
-    if (!items || items.length === 0 || !selection) {
-      console.error("No items or selection found:", { items, selection });
-      return new NextResponse("No data found", { status: 404 });
+    // データの存在確認をより厳密に
+    if (!items || items.length === 0) {
+      console.error("No items found:", { items });
+      return new NextResponse("No items found", { status: 404 });
+    }
+
+    if (!selection || !selection.title) {
+      console.error("No selection or title found:", { selection });
+      return new NextResponse("No selection found", { status: 404 });
     }
 
     // グリッドサイズを計算
