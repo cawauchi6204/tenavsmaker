@@ -1,5 +1,38 @@
 import { getSelectionItems, getSelection } from "../../actions";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const selection = await getSelection(params.id);
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const ogpImageUrl = `${baseUrl}/api/ogp/${params.id}`;
+
+  return {
+    title: selection.title,
+    description: `${selection.title} - 名刺代わりのAV10選メーカー`,
+    openGraph: {
+      title: selection.title,
+      description: `${selection.title} - 名刺代わりのAV10選メーカー`,
+      images: [{
+        url: ogpImageUrl,
+        width: 1200,
+        height: 630,
+        alt: selection.title,
+      }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: selection.title,
+      description: `${selection.title} - 名刺代わりのAV10選メーカー`,
+      images: [ogpImageUrl],
+    },
+  };
+}
 
 export default async function SelectionPage({
   params,
