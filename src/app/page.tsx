@@ -12,5 +12,8 @@ export default async function Home() {
 
   const recentSelections = await getRecentSelections();
 
-  return <AVSelector initialRecentSelections={recentSelections} />;
+  return <AVSelector initialRecentSelections={recentSelections.map(selection => ({
+    ...selection,
+    created_at: selection.created_at.toISOString()
+  }))} />;
 }
