@@ -37,7 +37,10 @@ export async function GET(
     }
 
     // 画像URLの事前検証
-    const validItems = items.filter(item => item && typeof item.image_url === 'string' && item.image_url.trim());
+    const validItems = items.filter(
+      (item) =>
+        item && typeof item.image_url === "string" && item.image_url.trim()
+    );
     if (validItems.length === 0) {
       console.error("No valid image URLs found");
       return new NextResponse("No valid images", { status: 400 });
@@ -56,9 +59,14 @@ export async function GET(
 
     // Draw title
     ctx.fillStyle = "#FFFFFF";
-    ctx.font = "bold 40px sans-serif";
+    ctx.font =
+      "bold 32px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(selection.title, WIDTH / 2, TITLE_HEIGHT);
+    ctx.textBaseline = "middle";
+
+    const text = selection.title;
+    const maxWidth = WIDTH - PADDING * 2;
+    ctx.fillText(text, WIDTH / 2, TITLE_HEIGHT, maxWidth);
 
     // Calculate image dimensions
     const imageWidth = (WIDTH - (GRID_COLS + 1) * PADDING) / GRID_COLS;
@@ -100,7 +108,7 @@ export async function GET(
           return null;
         }
       })
-    ).catch(error => {
+    ).catch((error) => {
       console.error("Error in Promise.all:", error);
       throw error;
     });
@@ -118,10 +126,11 @@ export async function GET(
   } catch (error) {
     console.error("Error generating OGP image:", error);
     return new NextResponse(
-      JSON.stringify({ 
+      JSON.stringify({
         error: error instanceof Error ? error.message : "Unknown error",
-        details: error instanceof Error ? error.stack : undefined 
-      }), {
+        details: error instanceof Error ? error.stack : undefined,
+      }),
+      {
         status: 500,
         headers: { "Content-Type": "application/json" },
       }
