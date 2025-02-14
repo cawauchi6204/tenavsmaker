@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -39,10 +38,11 @@ interface AVSelectorProps {
   }[];
 }
 
-export default function AVSelector({ initialRecentSelections }: AVSelectorProps) {
+export default function AVSelector({
+  initialRecentSelections,
+}: AVSelectorProps) {
   const [selectedAVs, setSelectedAVs] = useState<AV[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [includeTitles, setIncludeTitles] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -50,6 +50,7 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [commentTargetAV, setCommentTargetAV] = useState<AV | null>(null);
   const [commentText, setCommentText] = useState("");
+  const [shareTitle, setShareTitle] = useState("名刺代わりのAV10選");
 
   const slides: AV[] = Array(10)
     .fill(null)
@@ -73,10 +74,13 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
 
   const handleSearch = async () => {
     try {
-      const response = await fetch('/api/search?' + new URLSearchParams({
-        term: searchTerm,
-        type: searchType
-      }));
+      const response = await fetch(
+        "/api/search?" +
+          new URLSearchParams({
+            term: searchTerm,
+            type: searchType,
+          })
+      );
       const data = await response.json();
       setSearchResults(data);
       setShowSearchModal(true);
@@ -86,13 +90,9 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
   };
 
   const handleShare = () => {
-    const baseText = `#名刺代わりのAV10選`;
-    const titlesText = includeTitles
-      ? "\n\n" +
-        selectedAVs.map((av, i) => `${i + 1}. ${av.title}`).join("\n")
-      : "";
+    const baseText = `#${shareTitle}`;
     const shareText = encodeURIComponent(
-      `${baseText}${titlesText}\n\n#名刺代わりのAV10選`
+      `${baseText}\n\n\n#名刺代わりのAV10選メーカー`
     );
     window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank");
   };
@@ -101,6 +101,7 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
     setSelectedAVs([]);
     setCurrentSlide(0);
     setSearchTerm("");
+    setShareTitle("名刺代わりのAV10選");
   };
 
   // 1ページあたりの表示数を定義
@@ -126,11 +127,9 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
   // コメント保存用の関数
   const handleCommentSave = () => {
     if (commentTargetAV) {
-      setSelectedAVs(prev =>
-        prev.map(av =>
-          av.id === commentTargetAV.id
-            ? { ...av, comment: commentText }
-            : av
+      setSelectedAVs((prev) =>
+        prev.map((av) =>
+          av.id === commentTargetAV.id ? { ...av, comment: commentText } : av
         )
       );
     }
@@ -142,9 +141,7 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
   return (
     <div className="min-h-screen">
       <div className="max-w-[800px] mx-auto px-4 pb-8">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <span>#名刺代わりのAV10選</span>
-        </div>
+        <div className="flex items-center justify-center gap-2 mb-4"></div>
 
         <div className="flex items-start justify-center flex-col gap-2 mb-8">
           <div className="flex items-center gap-2">
@@ -168,7 +165,7 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
                   searchType === "title" ? "タイトルで探す" : "女優名で探す"
                 }
                 className="pl-8 bg-white border-[#ccc] text-[#666] hover:bg-gray-50 text-base"
-                style={{ fontSize: '16px' }}
+                style={{ fontSize: "16px" }}
               />
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999]" />
             </div>
@@ -206,9 +203,13 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
                       className="w-[calc((100%-1rem)/3)] flex-shrink-0"
                       onClick={() => handleAVSelect(slide)}
                     >
-                      <Card className={`p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full ${
-                        selectedAVs.find(b => b.id === slide.id) ? 'border-8 border-[#ffa31a]' : ''
-                      }`}>
+                      <Card
+                        className={`p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full ${
+                          selectedAVs.find((b) => b.id === slide.id)
+                            ? "border-8 border-[#ffa31a]"
+                            : ""
+                        }`}
+                      >
                         <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
                           <p className="text-center text-xs md:text-sm px-2 md:px-4">
                             ここをタップして
@@ -216,7 +217,7 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
                             AVを検索してください
                           </p>
                         </div>
-                        <button 
+                        <button
                           className="w-full py-1 md:py-2 px-2 bg-[#808080] md:px-4 text-white rounded transition-colors text-xs md:text-sm"
                           onClick={(e) => handleCommentClick(e, slide)}
                         >
@@ -231,7 +232,9 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
 
             <button
               className="absolute left-2 top-1/2 -translate-y-1/2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#ffa31a] rounded-full p-1"
-              onClick={() => setCurrentSlide((prev) => prev === 0 ? maxPage : prev - 1)}
+              onClick={() =>
+                setCurrentSlide((prev) => (prev === 0 ? maxPage : prev - 1))
+              }
             >
               <ChevronLeft className="h-8 w-8" />
             </button>
@@ -239,9 +242,7 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
             <button
               className="absolute right-2 top-1/2 -translate-y-1/2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#ffa31a] rounded-full p-1"
               onClick={() =>
-                setCurrentSlide((prev) =>
-                  prev === maxPage ? 0 : prev + 1
-                )
+                setCurrentSlide((prev) => (prev === maxPage ? 0 : prev + 1))
               }
             >
               <ChevronRight className="h-8 w-8" />
@@ -261,18 +262,15 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
         </div>
 
         <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Checkbox
-              id="include-titles"
-              checked={includeTitles}
-              onCheckedChange={(checked) =>
-                setIncludeTitles(checked as boolean)
-              }
-              className="border-[#ccc] bg-white"
-            />
-            <label htmlFor="include-titles" className="text-sm">
-              ツイートにAVのタイトルを含める
-            </label>
+          <div className="flex items-center gap-2">
+            <p className="text-sm">共有時のタイトル</p>
+            <div className="bg-white my-4 text-black relative flex-1 max-w-[400px]">
+              <Input
+                value={shareTitle}
+                onChange={(e) => setShareTitle(e.target.value)}
+                placeholder="タイトルを入力してください"
+              />
+            </div>
           </div>
           <button
             className="w-full py-3 bg-[#1da1f2] text-white rounded font-medium hover:bg-[#1a91da] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -291,10 +289,15 @@ export default function AVSelector({ initialRecentSelections }: AVSelectorProps)
         </button>
         {/* これまでの名刺代わりのAV10選 */}
         <div className="flex flex-col gap-2 mt-8">
-          <h1 className="font-bold text-center">これまで作成された名刺代わりのAV10選</h1>
+          <h1 className="font-bold text-center">
+            これまで作成された名刺代わりのAV10選
+          </h1>
           {initialRecentSelections.map((selection) => (
             <Link key={selection.id} href={`/selections/${selection.id}`}>
-              <h3>{selection.title} {dayjs(selection.created_at).format('YYYY/MM/DD')}作成</h3>
+              <h3>
+                {selection.title}{" "}
+                {dayjs(selection.created_at).format("YYYY/MM/DD")}作成
+              </h3>
             </Link>
           ))}
         </div>
