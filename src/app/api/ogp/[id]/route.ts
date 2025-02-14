@@ -1,4 +1,4 @@
-import { createCanvas, loadImage } from "canvas";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import { getSelectionItems, getSelection } from "@/app/actions";
 import { NextResponse } from "next/server";
 
@@ -16,6 +16,9 @@ function calculateGrid(itemCount: number) {
   if (itemCount <= 9) return { cols: 3, rows: 3 };
   return { cols: 3, rows: 4 }; // 最大12個まで
 }
+
+// フォントの登録を追加
+registerFont("./fonts/NotoSansJP-Bold.ttf", { family: "Noto Sans JP" });
 
 export async function GET(
   request: Request,
@@ -56,7 +59,7 @@ export async function GET(
 
     // Draw title
     ctx.fillStyle = "#FFFFFF";
-    ctx.font = "bold 40px sans-serif"; // フォントファミリーを追加
+    ctx.font = "bold 40px 'Noto Sans JP'";
     ctx.textAlign = "center";
     ctx.fillText(selection.title, WIDTH / 2, TITLE_HEIGHT);
 
