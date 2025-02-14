@@ -1,19 +1,16 @@
-import dynamic from "next/dynamic";
-import { getPackages, getRecentSelections } from "./actions";
+import AVSelector from "@/components/av-selector";
+import { getRecentSelections } from "@/app/actions";
+import dayjs from "dayjs";
 
 export default async function Home() {
-  // サーバーサイドでパッケージ情報を取得し、ログに出力（UIは変更しません）
-  const packages = await getPackages();
-  console.log("Retrieved packages:", packages);
-
-  const AVSelector = dynamic(() => import("../../av-selector"), {
-    ssr: false,
-  });
-
   const recentSelections = await getRecentSelections();
 
-  return <AVSelector initialRecentSelections={recentSelections.map(selection => ({
+  // Date オブジェクトを dayjs を使って ISO 文字列に変換
+  const serializedSelections = recentSelections.map((selection) => ({
     ...selection,
-    created_at: selection.created_at.toISOString()
-  }))} />;
+    created_at: dayjs(selection.created_at).format()
+  }));
+  console.log("🚀 ~ serializedSelections ~ serializedSelections:", serializedSelections)
+
+  return <AVSelector initialRecentSelections={serializedSelections} />;
 }
