@@ -92,11 +92,6 @@ export async function GET(
         } catch (error) {
           console.error(`Error loading image ${index}:`, error);
           // エラー時のフォールバック処理を追加
-          ctx.fillStyle = "#CCCCCC";
-          ctx.fillRect(x, y, imageWidth, imageHeight);
-          ctx.fillStyle = "#666666";
-          ctx.font = "14px sans-serif";
-          ctx.fillText("Image Error", x + imageWidth/2, y + imageHeight/2);
         }
       })
     );
@@ -113,9 +108,16 @@ export async function GET(
     });
   } catch (error) {
     console.error("Error generating OGP image:", error);
-    return new NextResponse(JSON.stringify({ error: error.message }), { 
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    if (error instanceof Error) {
+      return new NextResponse(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else {
+      return new NextResponse(JSON.stringify({ error: "Unknown error" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
   }
 }
