@@ -29,14 +29,17 @@ export const metadata: Metadata = {
   },
   themeColor: "#ffa31a",
 };
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const recentSelections = await getRecentSelections();
 
+  // revalidate を 0 に設定して動的レンダリングを強制
+
   // Date オブジェクトを dayjs を使って ISO 文字列に変換
   const serializedSelections = recentSelections.map((selection) => ({
     ...selection,
-    created_at: dayjs(selection.created_at).format()
+    created_at: dayjs(selection.created_at).format(),
   }));
 
   return <AVSelector initialRecentSelections={serializedSelections} />;
