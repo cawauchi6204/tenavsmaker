@@ -24,6 +24,10 @@ export const metadata: Metadata = {
     description: "名刺代わりのAV10選メーカーです。",
     images: ["/AV.png"],
   },
+  icons: {
+    icon: "/favicon.ico",
+  },
+  themeColor: "#ffa31a",
 };
 
 export default async function Home() {
