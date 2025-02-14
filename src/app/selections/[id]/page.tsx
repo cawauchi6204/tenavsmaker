@@ -7,13 +7,11 @@ export default async function SelectionPage({
   params: { id: string };
 }) {
   const items = (await getSelectionItems(params.id));
-  console.log("🚀 ~ items:", items)
   const selection = (await getSelection(params.id));
-  console.log("🚀 ~ selection:", selection)
 
   return (
-    <main className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">{selection.title}</h1>
+    <main className="container mx-auto pb-8">
+      <h1 className="text-2xl font-bold mb-6 text-white">{selection.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item) => (
           <div

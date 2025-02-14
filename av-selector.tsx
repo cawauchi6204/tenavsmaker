@@ -130,11 +130,7 @@ export default function AVSelector() {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-[800px] mx-auto px-4 py-8">
-        <h1 className="text-2xl text-center mb-4">
-          名刺代わりのAV10選メーカー
-        </h1>
-
+      <div className="max-w-[800px] mx-auto px-4 pb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
           <span>#名刺代わりのAV10選</span>
         </div>

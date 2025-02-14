@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AgeCheckModal from "@/components/age-check-modal";
 import { Analytics } from "@vercel/analytics/react";
-
+import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 const defaultOgImage = {
@@ -69,6 +69,13 @@ export default function RootLayout({
     <html lang="ja">
       <body className={inter.className}>
         <div className="min-h-screen flex flex-col px-4">
+          <header className="flex justify-center items-center text-center text-sm text-gray-500 py-4">
+            <Link href="/">
+              <h1 className="text-2xl text-center mb-4">
+                #名刺代わりのAV10選メーカー
+              </h1>
+            </Link>
+          </header>
           <main className="flex-grow">
             {children}
             <AgeCheckModal />
