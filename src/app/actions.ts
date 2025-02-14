@@ -5,18 +5,34 @@ import { neon } from "@neondatabase/serverless";
 // Neonの接続設定
 const sql = neon(process.env.DATABASE_URL as string);
 
+interface Package {
+  id: string;
+  title: string;
+  image_url: string;
+  fanza_url: string;
+  description: string;
+  created_at: string;
+  sample_movie_url: string;
+}
+
+interface Selection {
+  id: string;
+  title: string;
+  description: string;
+}
+
 /**
  * 全てのパッケージを取得します。
  * パッケージはAV候補（またはパッケージ）の情報です。
  */
 export async function getPackages() {
   const result = await sql`
-    SELECT id, title, image_url, fanza_url, description, created_at
+    SELECT id, title, image_url, fanza_url, description, created_at, sample_movie_url
     FROM packages
     ORDER BY created_at DESC;
   `;
   console.log("getPackages result:", result);
-  return result;
+  return result as Package[];
 }
 
 /**
@@ -68,7 +84,7 @@ export async function addSelectionItem({
  */
 export async function getSelectionItems(selectionId: string) {
   const items = await sql`
-    SELECT si.*, p.title AS package_title, p.image_url, p.fanza_url, p.description AS package_description
+    SELECT si.*, p.title AS package_title, p.image_url, p.fanza_url, p.description, p.sample_movie_url
     FROM selection_items si
     JOIN packages p ON si.package_id = p.id
     WHERE si.selection_id = ${selectionId}
@@ -76,3 +92,11 @@ export async function getSelectionItems(selectionId: string) {
   `;
   return items;
 }
+
+export async function getSelection(selectionId: string) {
+  const selection = await sql`
+    SELECT * FROM selections WHERE id = ${selectionId}
+  `;
+  return selection[0] as Selection;
+}
+

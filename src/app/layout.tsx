@@ -68,9 +68,19 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className}>
-        {children}
-        <AgeCheckModal />
-        <Analytics />
+        <div className="min-h-screen flex flex-col px-4">
+          <main className="flex-grow">
+            {children}
+            <AgeCheckModal />
+            <Analytics />
+          </main>
+          <footer className="flex justify-center items-center text-center text-sm text-gray-500 py-4">
+            <p>
+              Powered by{" "}
+              <a href="https://affiliate.dmm.com/api/">FANZA Webサービス</a>
+            </p>
+          </footer>
+        </div>
       </body>
     </html>
   );
