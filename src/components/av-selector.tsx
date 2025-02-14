@@ -360,13 +360,13 @@ export default function AVSelector({
                   onClick={() => setShowCommentModal(false)}
                   className="text-gray-500 hover:text-gray-700"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-6 w-6 bg-white" />
                 </button>
               </div>
               <textarea
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                className="w-full h-32 p-2 border border-gray-300 rounded mb-4 resize-none"
+                className="w-full text-black h-32 p-2 border border-gray-300 rounded mb-4 resize-none"
                 placeholder="コメントを入力してください"
               />
               <div className="flex justify-end gap-2">
