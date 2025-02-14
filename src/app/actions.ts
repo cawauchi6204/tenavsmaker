@@ -19,6 +19,7 @@ interface Selection {
   id: string;
   title: string;
   description: string;
+  created_at: Date;
 }
 
 /**
@@ -100,3 +101,11 @@ export async function getSelection(selectionId: string) {
   return selection[0] as Selection;
 }
 
+export async function getRecentSelections() {
+  const selections = await sql`
+    SELECT * FROM selections
+    ORDER BY created_at DESC
+    -- LIMIT 10;
+  `;
+  return selections as Selection[];
+}

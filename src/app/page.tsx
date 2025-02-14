@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { getPackages } from "./actions";
+import { getPackages, getRecentSelections } from "./actions";
 
 export default async function Home() {
   // サーバーサイドでパッケージ情報を取得し、ログに出力（UIは変更しません）
@@ -10,5 +10,7 @@ export default async function Home() {
     ssr: false,
   });
 
-  return <AVSelector />;
+  const recentSelections = await getRecentSelections();
+
+  return <AVSelector initialRecentSelections={recentSelections} />;
 }

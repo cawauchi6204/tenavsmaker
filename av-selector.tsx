@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import dayjs from "dayjs";
 
 interface AV {
   id: number;
@@ -28,7 +30,16 @@ interface SearchResult {
   fanza_url: string;
 }
 
-export default function AVSelector() {
+interface AVSelectorProps {
+  initialRecentSelections: {
+    id: string;
+    title: string;
+    description: string;
+    created_at: string;
+  }[];
+}
+
+export default function AVSelector({ initialRecentSelections }: AVSelectorProps) {
   const [selectedAVs, setSelectedAVs] = useState<AV[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [includeTitles, setIncludeTitles] = useState(false);
@@ -278,7 +289,15 @@ export default function AVSelector() {
         >
           リセット
         </button>
-
+        {/* これまでの名刺代わりのAV10選 */}
+        <div className="flex flex-col gap-2 mt-8">
+          <h1 className="font-bold text-center">これまで作成された名刺代わりのAV10選</h1>
+          {initialRecentSelections.map((selection) => (
+            <Link key={selection.id} href={`/selections/${selection.id}`}>
+              <h3>{selection.title} {dayjs(selection.created_at).format('YYYY/MM/DD')}作成</h3>
+            </Link>
+          ))}
+        </div>
         {/* <footer className="mt-8 text-center text-sm text-[#666] border-t border-[#eee] pt-8">
           <a href="#" className="hover:text-[#333] transition-colors">
             プライバシーポリシー

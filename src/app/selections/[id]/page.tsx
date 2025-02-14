@@ -16,7 +16,7 @@ export default async function SelectionPage({
         {items.map((item) => (
           <div
             key={item.package_id}
-            className="border rounded-lg overflow-hidden shadow-lg"
+            className="rounded-lg overflow-hidden shadow-lg"
           >
             <div className="aspect-w-16 aspect-h-9">
               <Image
@@ -28,7 +28,7 @@ export default async function SelectionPage({
               />
             </div>
             <div className="p-4">
-              <h2 className="text-lg font-semibold mb-2">{item.package_title}</h2>
+              <h2 className="font-semibold mb-2">{item.package_title}</h2>
               <p className="text-gray-600 text-sm mb-2">
                 {item.description}
               </p>
