@@ -81,48 +81,29 @@ export default function VideoDetailPage({
         <div className="bg-gray-50 p-6 rounded-lg shadow-sm mb-8">
           <h1 className="text-2xl font-bold mb-4">{video.title}</h1>
 
-          <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col gap-6">
             {/* サムネイル画像 */}
-            <div className="md:w-1/3">
-              <div className="bg-gray-200 aspect-[3/4] rounded-md flex items-center justify-center relative overflow-hidden">
-                {video.imageUrls.length > 0 ? (
-                  <div className="w-full h-full relative">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${video.imageUrls[0]})` }}
-                    ></div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                      <span className="text-white text-lg font-bold">
-                        サンプル画像
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-gray-500 text-lg">サンプル画像</span>
-                  </div>
-                )}
-              </div>
-              <div className="mt-4 grid grid-cols-4 gap-2">
-                {video.imageUrls.map((url, i) => (
+            <div className="mt-4 flex flex-col gap-2">
+              {video.imageUrls.map((url, i) => {
+                if (i !== 0) {
+                  return <></>;
+                }
+                return (
                   <div
                     key={i}
-                    className="bg-gray-200 aspect-square rounded-sm flex items-center justify-center overflow-hidden relative"
+                    className="bg-gray-200 aspect-[3/2] rounded-sm flex items-center justify-center overflow-hidden relative"
                   >
                     <div
                       className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url(${url})` }}
                     ></div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                      <span className="text-white text-xs">画像{i + 1}</span>
-                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center"></div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-
             {/* 動画情報 */}
-            <div className="md:w-2/3">
+            <div>
               <div className="bg-white p-4 rounded-md shadow-sm mb-4">
                 <div className="flex items-center mb-2">
                   <span className="text-yellow-500 text-xl mr-2">
@@ -213,6 +194,36 @@ export default function VideoDetailPage({
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
+          <div>
+            <div className="mt-4 flex flex-col gap-2">
+              {video.imageUrls.map((url, i) => {
+                if (i === 0) {
+                  return <></>;
+                }
+                return (
+                  <div
+                    key={i}
+                    className="bg-gray-200 aspect-[3/2] rounded-sm flex items-center justify-center overflow-hidden relative"
+                  >
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${url})` }}
+                    ></div>
+                    <div className="absolute inset-0 flex items-center justify-center"></div>
+                  </div>
+                );
+              })}
+              {/* 価格確認ボタン */}
+              <a
+                href={`https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=${video.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-red-600 text-white text-center py-4 rounded-md font-medium mb-4 hover:bg-red-700 transition-colors"
+              >
+                この作品の価格を確認
+              </a>
             </div>
           </div>
         </div>
