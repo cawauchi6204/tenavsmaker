@@ -2,7 +2,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { videoData } from "@/lib/video-data";
 
-export default function VideoDetailPage({ params }: { params: { id: string } }) {
+export default function VideoDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // IDに基づいて動画データを検索
   const video = videoData.find((v) => v.id === params.id);
 
@@ -80,18 +84,38 @@ export default function VideoDetailPage({ params }: { params: { id: string } }) 
           <div className="flex flex-col md:flex-row gap-6">
             {/* サムネイル画像 */}
             <div className="md:w-1/3">
-              <div className="bg-gray-200 aspect-[3/4] rounded-md flex items-center justify-center relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-gray-500 text-lg">サンプル画像</span>
-                </div>
+              <div className="bg-gray-200 aspect-[3/4] rounded-md flex items-center justify-center relative overflow-hidden">
+                {video.imageUrls.length > 0 ? (
+                  <div className="w-full h-full relative">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${video.imageUrls[0]})` }}
+                    ></div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      <span className="text-white text-lg font-bold">
+                        サンプル画像
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-gray-500 text-lg">サンプル画像</span>
+                  </div>
+                )}
               </div>
               <div className="mt-4 grid grid-cols-4 gap-2">
-                {[...Array(4)].map((_, i) => (
+                {video.imageUrls.map((url, i) => (
                   <div
                     key={i}
-                    className="bg-gray-200 aspect-square rounded-sm flex items-center justify-center"
+                    className="bg-gray-200 aspect-square rounded-sm flex items-center justify-center overflow-hidden relative"
                   >
-                    <span className="text-gray-500 text-xs">画像{i + 1}</span>
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${url})` }}
+                    ></div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      <span className="text-white text-xs">画像{i + 1}</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -182,46 +206,6 @@ export default function VideoDetailPage({ params }: { params: { id: string } }) 
             </div>
           </div>
         </div>
-
-        {/* サンプル動画 */}
-        <div className="mb-8">
-          <h2 className="font-bold text-xl mb-4">サンプル動画</h2>
-          <div className="bg-gray-200 aspect-video rounded-md flex items-center justify-center">
-            <span className="text-gray-500">サンプル動画はありません</span>
-          </div>
-        </div>
-
-        {/* 関連作品 */}
-        <div className="mb-8">
-          <h2 className="font-bold text-xl mb-4">関連作品</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {videoData
-              .filter((v) => v.id !== video.id && v.actress.includes("藤野つかさ"))
-              .slice(0, 4)
-              .map((relatedVideo, index) => (
-                <Link
-                  href={`/${relatedVideo.id}`}
-                  key={index}
-                  className="bg-white p-3 rounded-md shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="bg-gray-200 aspect-[3/4] rounded-md mb-2 flex items-center justify-center">
-                    <span className="text-gray-500 text-sm">サンプル画像</span>
-                  </div>
-                  <h3 className="text-sm font-semibold line-clamp-2">
-                    {relatedVideo.title}
-                  </h3>
-                  <p className="text-xs text-gray-600 mt-1">
-                    {relatedVideo.actress}
-                  </p>
-                </Link>
-              ))}
-          </div>
-        </div>
-
-        {/* フッター */}
-        <footer className="text-center border-t pt-4 mt-8">
-          <p>© エロ娘の館.</p>
-        </footer>
       </main>
     </div>
   );

@@ -14,6 +14,7 @@ export type VideoData = {
   director?: string;
   price?: string;
   series?: string;
+  imageUrls: string[]; // 画像URL配列を追加
 };
 
 // 動画データ
@@ -62,6 +63,12 @@ export const videoData: VideoData[] = [
     label: "e-kiss",
     director: "パールライス坂上",
     price: "￥500~",
+    imageUrls: [
+      "https://su-musume.com/wp-content/uploads/2025/02/ekdv00740pl.jpg",
+      "https://pics.dmm.co.jp/digital/video/ekdv00740/ekdv00740jp-1.jpg",
+      "https://pics.dmm.co.jp/digital/video/ekdv00740/ekdv00740jp-2.jpg",
+      "https://pics.dmm.co.jp/digital/video/ekdv00740/ekdv00740jp-3.jpg",
+    ],
   },
   {
     id: "h_113izm00028",
@@ -88,6 +95,12 @@ export const videoData: VideoData[] = [
     maker: "プラム",
     label: "素人only プラム",
     price: "￥500~",
+    imageUrls: [
+      "https://su-musume.com/wp-content/uploads/2025/02/h_113izm00028pl.jpg",
+      "https://pics.dmm.co.jp/digital/video/h_113izm00028/h_113izm00028jp-1.jpg",
+      "https://pics.dmm.co.jp/digital/video/h_113izm00028/h_113izm00028jp-2.jpg",
+      "https://pics.dmm.co.jp/digital/video/h_113izm00028/h_113izm00028jp-3.jpg",
+    ],
   },
   {
     id: "soav00114",
@@ -113,6 +126,12 @@ export const videoData: VideoData[] = [
     maker: "人妻援護会/エマニエル",
     label: "人妻援護会/エマニエル",
     price: "￥500~",
+    imageUrls: [
+      "https://su-musume.com/wp-content/uploads/2025/02/soav00114pl.jpg",
+      "https://pics.dmm.co.jp/digital/video/soav00114/soav00114jp-1.jpg",
+      "https://pics.dmm.co.jp/digital/video/soav00114/soav00114jp-2.jpg",
+      "https://pics.dmm.co.jp/digital/video/soav00114/soav00114jp-3.jpg",
+    ],
   },
   {
     id: "ksbj00346",
@@ -142,6 +161,12 @@ export const videoData: VideoData[] = [
     maker: "KSB企画/エマニエル",
     label: "",
     price: "￥500~",
+    imageUrls: [
+      "https://su-musume.com/wp-content/uploads/2025/02/ksbj00346pl.jpg",
+      "https://pics.dmm.co.jp/digital/video/ksbj00346/ksbj00346jp-1.jpg",
+      "https://pics.dmm.co.jp/digital/video/ksbj00346/ksbj00346jp-2.jpg",
+      "https://pics.dmm.co.jp/digital/video/ksbj00346/ksbj00346jp-3.jpg",
+    ],
   },
   {
     id: "1ienfa37101",
@@ -166,6 +191,12 @@ export const videoData: VideoData[] = [
     maker: "アイエナRISING",
     label: "IENFA",
     price: "￥490~",
+    imageUrls: [
+      "https://su-musume.com/wp-content/uploads/2025/02/1ienfa37101pl.jpg",
+      "https://pics.dmm.co.jp/digital/video/1ienfa37101/1ienfa37101jp-1.jpg",
+      "https://pics.dmm.co.jp/digital/video/1ienfa37101/1ienfa37101jp-2.jpg",
+      "https://pics.dmm.co.jp/digital/video/1ienfa37101/1ienfa37101jp-3.jpg",
+    ],
   },
   {
     id: "1ienf00352",
@@ -190,6 +221,12 @@ export const videoData: VideoData[] = [
     maker: "アイエナジー",
     label: "IENF",
     price: "￥500~",
+    imageUrls: [
+      "https://su-musume.com/wp-content/uploads/2025/02/1ienf00352pl.jpg",
+      "https://pics.dmm.co.jp/digital/video/1ienf00352/1ienf00352jp-1.jpg",
+      "https://pics.dmm.co.jp/digital/video/1ienf00352/1ienf00352jp-2.jpg",
+      "https://pics.dmm.co.jp/digital/video/1ienf00352/1ienf00352jp-3.jpg",
+    ],
   },
   {
     id: "h_1231ss00110ex",
@@ -211,5 +248,8 @@ export const videoData: VideoData[] = [
     maker: "ファインピクチャーズ",
     label: "SHOOTING STAR（ファインピクチャーズ）",
     price: "￥3480~",
+    imageUrls: [
+      "https://su-musume.com/wp-content/uploads/2025/02/h_1231ss00110expl.jpg",
+    ],
   },
 ];
