@@ -189,6 +189,16 @@ export default function VideoDetailPage({
                 </p>
               </div>
 
+              {/* 価格確認ボタン */}
+              <a
+                href={`https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=${video.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-red-600 text-white text-center py-4 rounded-md font-medium mb-4 hover:bg-red-700 transition-colors"
+              >
+                この作品の価格を確認
+              </a>
+
               {/* ジャンル */}
               <div className="bg-white p-4 rounded-md shadow-sm">
                 <h2 className="font-bold text-lg mb-2">ジャンル</h2>

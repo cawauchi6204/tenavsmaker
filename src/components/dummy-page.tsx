@@ -44,41 +44,60 @@ export default function DummyPage() {
         {/* 動画一覧 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {videoData.map((video, i) => (
-            <div key={i} className="border p-4 rounded">
-              <div className="flex items-start">
-                <div className="w-24 h-32 bg-gray-200 mr-4 rounded overflow-hidden relative flex-shrink-0">
-                  {video.imageUrls.length > 0 ? (
-                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${video.imageUrls[0]})` }}></div>
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <span className="text-gray-500 text-xs">サンプル画像</span>
+            <div key={i} className="mb-6">
+              <div className="relative">
+                <Link href={`/${video.id}`}>
+                  <div className="aspect-[4/3] bg-gray-200 rounded-md overflow-hidden relative">
+                    {video.imageUrls.length > 0 ? (
+                      <div
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{
+                          backgroundImage: `url(${video.imageUrls[0]})`,
+                        }}
+                      ></div>
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <span className="text-gray-500 text-sm">
+                          サンプル画像
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">
+                      動画
                     </div>
-                  )}
-                  <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs px-1 py-0.5">
-                    {video.quality}
                   </div>
+                </Link>
+              </div>
+
+              <div className="mt-2">
+                <h3 className="text-sm font-medium">
+                  <Link href={`/${video.id}`} className="hover:underline">
+                    {video.id} 【{video.quality}】{video.title} {video.actress}
+                  </Link>
+                </h3>
+                <div className="text-xs text-gray-600 mt-1">
+                  <a
+                    href={`https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=${video.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    この作品の価格を確認
+                  </a>{" "}
+                  <a
+                    href={`https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=${video.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    この作品の価格を確認
+                  </a>{" "}
+                  レビュー {video.review}発売日{video.releaseDate}収録
+                  {video.duration}分 ジャンル
+                  {video.genres.slice(0, 5).join(" ")}...
                 </div>
-                <div>
-                  <p className="font-bold">
-                    <Link href={`/${video.id}`} className="hover:underline">
-                      {video.title}{" "}
-                      {video.actress}
-                    </Link>
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <Link href={`/${video.id}`} className="text-blue-600 hover:underline">
-                      この作品の価格を確認
-                    </Link>{" "}
-                    レビュー
-                    {video.review}発売日{video.releaseDate}収録{video.duration}
-                    分
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    ジャンル: {video.genres.slice(0, 5).join(" ")}...
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    February 25, 2025
-                  </p>
+                <div className="text-xs text-gray-500 mt-1">
+                  February 25, 2025
                 </div>
               </div>
             </div>
