@@ -30,34 +30,65 @@ export interface DmmItem {
     average: number;
   };
   URL: string;
-  URLsp: string;
+  URLsp?: string;
   affiliateURL: string;
-  affiliateURLsp: string;
-  image_url: {
+  affiliateURLsp?: string;
+  imageURL: {
     list: string;
     small: string;
     large: string;
   };
+  sampleImageURL?: {
+    sample_s: {
+      image: string[];
+    };
+    sample_l: {
+      image: string[];
+    };
+  };
+  sampleMovieURL?: {
+    size_476_306: string;
+    size_560_360: string;
+    size_644_414: string;
+    size_720_480: string;
+    pc_flag: number;
+    sp_flag: number;
+  };
+  prices?: {
+    price: string;
+    deliveries: {
+      delivery: {
+        type: string;
+        price: string;
+      }[];
+    };
+  };
   date: string;
   iteminfo: {
     genre: {
-      id: string;
+      id: string | number;
       name: string;
     }[];
     maker: {
-      id: string;
+      id: string | number;
       name: string;
     }[];
     actress: {
-      id: string;
+      id: string | number;
       name: string;
+      ruby?: string;
     }[];
     director: {
-      id: string;
+      id: string | number;
       name: string;
+      ruby?: string;
     }[];
     series: {
-      id: string;
+      id: string | number;
+      name: string;
+    }[];
+    label?: {
+      id: string | number;
       name: string;
     }[];
   };
@@ -134,7 +165,7 @@ export async function fetchDmmApi(
             URLsp: "https://www.dmm.co.jp/digital/videoa/",
             affiliateURL: "https://www.dmm.co.jp/digital/videoa/",
             affiliateURLsp: "https://www.dmm.co.jp/digital/videoa/",
-            image_url: {
+            imageURL: {
               list: "https://pics.dmm.co.jp/digital/video/dummy_001/dummy_001ps.jpg",
               small:
                 "https://pics.dmm.co.jp/digital/video/dummy_001/dummy_001ps.jpg",
@@ -242,7 +273,7 @@ export async function fetchDmmApi(
             URLsp: "https://www.dmm.co.jp/digital/videoa/",
             affiliateURL: "https://www.dmm.co.jp/digital/videoa/",
             affiliateURLsp: "https://www.dmm.co.jp/digital/videoa/",
-            image_url: {
+            imageURL: {
               list: "https://pics.dmm.co.jp/digital/video/error_001/error_001ps.jpg",
               small: "https://pics.dmm.co.jp/digital/video/error_001/error_001ps.jpg",
               large: "https://pics.dmm.co.jp/digital/video/error_001/error_001pl.jpg",
@@ -462,9 +493,9 @@ export function convertToVideoData(item: DmmItem) {
     ).join(", "),
     price: item.price || "",
     imageUrls: [
-      safeAccess(item.image_url, "large"),
-      safeAccess(item.image_url, "small"),
-      safeAccess(item.image_url, "list"),
+      safeAccess(item.imageURL, "large"),
+      safeAccess(item.imageURL, "small"),
+      safeAccess(item.imageURL, "list"),
     ].filter(Boolean) as string[],
   };
 }
