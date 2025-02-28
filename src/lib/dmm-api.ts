@@ -14,6 +14,44 @@ export interface DmmApiResponse {
   };
 }
 
+// DMM API の女優検索レスポンス型定義
+export interface DmmActressApiResponse {
+  result: {
+    status: number;
+    result_count: number;
+    total_count: number;
+    first_position: number;
+    actress: DmmActress[];
+  };
+}
+
+// DMM API の女優情報型定義
+export interface DmmActress {
+  id: number;
+  name: string;
+  ruby: string;
+  bust: number;
+  cup: string;
+  waist: number;
+  hip: number;
+  height: number;
+  birthday: string;
+  blood_type: string;
+  hobby: string;
+  prefectures: string;
+  imageURL: {
+    small: string;
+    large: string;
+  };
+  listURL: {
+    digital: string;
+    monthly: string;
+    ppm: string;
+    mono: string;
+    rental: string;
+  };
+}
+
 // DMM API の商品情報型定義
 export interface DmmItem {
   service_code: string;
@@ -95,7 +133,7 @@ export interface DmmItem {
   price: string;
 }
 
-// DMM API の検索パラメータ型定義
+// DMM API の商品検索パラメータ型定義
 export interface DmmApiParams {
   site: string;
   service: string;
@@ -120,13 +158,34 @@ export interface DmmApiParams {
   genre?: string;
 }
 
+// DMM API の女優検索パラメータ型定義
+export interface DmmActressApiParams {
+  initial?: string;
+  actress_id?: number;
+  keyword?: string;
+  gte_bust?: number;
+  lte_bust?: number;
+  gte_waist?: number;
+  lte_waist?: number;
+  gte_hip?: number;
+  lte_hip?: number;
+  gte_height?: number;
+  lte_height?: number;
+  gte_birthday?: string;
+  lte_birthday?: string;
+  sort?: string;
+  hits?: number;
+  offset?: number;
+  output?: string;
+}
+
 // アフィリエイトID
 const AFFILIATE_ID = process.env.DMM_AFFILIATE_ID || "";
 // API ID (環境変数から取得する場合)
 const API_ID = process.env.DMM_API_ID || "";
 
 /**
- * DMM API を呼び出す関数
+ * DMM API の商品検索を呼び出す関数
  * @param params 検索パラメータ
  * @returns API レスポンス
  */
@@ -138,78 +197,10 @@ export async function fetchDmmApi(
 
   // API ID が設定されているか確認
   if (!API_ID) {
-    console.warn("DMM_API_ID is not set. Using dummy data instead.");
-    // API ID が設定されていない場合はダミーデータを返す
-    return {
-      result: {
-        status: 200,
-        result_count: 1,
-        total_count: 1,
-        first_position: 1,
-        items: [
-          {
-            service_code: "digital",
-            service_name: "FANZA",
-            floor_code: "videoa",
-            floor_name: "ビデオ",
-            category_name: "ビデオ",
-            content_id: "dummy_001",
-            product_id: "dummy_001",
-            title: "サンプル動画タイトル",
-            volume: "",
-            review: {
-              count: 10,
-              average: 4.5,
-            },
-            URL: "https://www.dmm.co.jp/digital/videoa/",
-            URLsp: "https://www.dmm.co.jp/digital/videoa/",
-            affiliateURL: "https://www.dmm.co.jp/digital/videoa/",
-            affiliateURLsp: "https://www.dmm.co.jp/digital/videoa/",
-            imageURL: {
-              list: "https://pics.dmm.co.jp/digital/video/dummy_001/dummy_001ps.jpg",
-              small:
-                "https://pics.dmm.co.jp/digital/video/dummy_001/dummy_001ps.jpg",
-              large:
-                "https://pics.dmm.co.jp/digital/video/dummy_001/dummy_001pl.jpg",
-            },
-            date: "2025-02-28",
-            iteminfo: {
-              genre: [
-                {
-                  id: "1",
-                  name: "サンプルジャンル",
-                },
-              ],
-              maker: [
-                {
-                  id: "1",
-                  name: "サンプルメーカー",
-                },
-              ],
-              actress: [
-                {
-                  id: "1",
-                  name: "サンプル女優",
-                },
-              ],
-              director: [
-                {
-                  id: "1",
-                  name: "サンプル監督",
-                },
-              ],
-              series: [
-                {
-                  id: "1",
-                  name: "サンプルシリーズ",
-                },
-              ],
-            },
-            price: "¥500〜",
-          },
-        ],
-      },
-    };
+    console.error("DMM_API_ID is not set. API requests will fail.");
+    throw new Error(
+      "DMM_API_ID is not set. Please check your environment variables."
+    );
   }
 
   // パラメータを URL クエリに変換（すべての値を文字列に変換）
@@ -228,8 +219,16 @@ export async function fetchDmmApi(
   });
 
   try {
+    // APIリクエストURLをログに出力
+    const requestUrl = `${baseUrl}?${queryParams.toString()}`;
+    console.log("DMM 商品検索 API リクエストURL:", requestUrl);
+    
     // API リクエスト
-    const response = await fetch(`${baseUrl}?${queryParams.toString()}`);
+    const response = await fetch(requestUrl);
+
+    console.log(
+      `DMM 商品検索 API レスポンスステータス: ${response.status} ${response.statusText}`
+    );
 
     if (!response.ok) {
       throw new Error(
@@ -238,6 +237,11 @@ export async function fetchDmmApi(
     }
 
     const data = await response.json();
+    
+    // レスポンスの概要をログに出力
+    console.log(
+      `DMM 商品検索 API レスポンス概要: status=${data.result?.status}, result_count=${data.result?.result_count}, total_count=${data.result?.total_count}`
+    );
 
     // レスポンスの形式を確認
     if (!data || !data.result || !Array.isArray(data.result.items)) {
@@ -247,75 +251,79 @@ export async function fetchDmmApi(
     return data;
   } catch (error) {
     console.error("Error fetching DMM API:", error);
-    // エラーが発生した場合もダミーデータを返す
-    return {
-      result: {
-        status: 200,
-        result_count: 1,
-        total_count: 1,
-        first_position: 1,
-        items: [
-          {
-            service_code: "digital",
-            service_name: "FANZA",
-            floor_code: "videoa",
-            floor_name: "ビデオ",
-            category_name: "ビデオ",
-            content_id: "error_001",
-            product_id: "error_001",
-            title: "API エラー（ダミーデータ）",
-            volume: "",
-            review: {
-              count: 0,
-              average: 0,
-            },
-            URL: "https://www.dmm.co.jp/digital/videoa/",
-            URLsp: "https://www.dmm.co.jp/digital/videoa/",
-            affiliateURL: "https://www.dmm.co.jp/digital/videoa/",
-            affiliateURLsp: "https://www.dmm.co.jp/digital/videoa/",
-            imageURL: {
-              list: "https://pics.dmm.co.jp/digital/video/error_001/error_001ps.jpg",
-              small: "https://pics.dmm.co.jp/digital/video/error_001/error_001ps.jpg",
-              large: "https://pics.dmm.co.jp/digital/video/error_001/error_001pl.jpg",
-            },
-            date: "2025-02-28",
-            iteminfo: {
-              genre: [
-                {
-                  id: "1",
-                  name: "エラー",
-                },
-              ],
-              maker: [
-                {
-                  id: "1",
-                  name: "エラー",
-                },
-              ],
-              actress: [
-                {
-                  id: "1",
-                  name: "エラー",
-                },
-              ],
-              director: [
-                {
-                  id: "1",
-                  name: "エラー",
-                },
-              ],
-              series: [
-                {
-                  id: "1",
-                  name: "エラー",
-                },
-              ],
-            },
-            price: "¥0",
-          },
-        ],
-      },
-    };
+    // エラーをそのまま投げる
+    throw new Error(`DMM API request failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/**
+ * DMM API の女優検索を呼び出す関数
+ * @param params 女優検索パラメータ
+ * @returns API レスポンス
+ */
+export async function fetchDmmActressApi(
+  params: DmmActressApiParams
+): Promise<DmmActressApiResponse> {
+  // API のベース URL
+  const baseUrl = "https://api.dmm.com/affiliate/v3/ActressSearch";
+
+  // API ID が設定されているか確認
+  if (!API_ID) {
+    console.error("DMM_API_ID is not set. API requests will fail.");
+    throw new Error(
+      "DMM_API_ID is not set. Please check your environment variables."
+    );
+  }
+
+  // パラメータを URL クエリに変換（すべての値を文字列に変換）
+  const queryParams = new URLSearchParams();
+
+  // 必須パラメータを追加
+  queryParams.append("api_id", API_ID);
+  queryParams.append("affiliate_id", AFFILIATE_ID);
+
+  // 検索パラメータを追加（値を文字列に変換）
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) {
+      queryParams.append(key, String(value));
+    }
+  });
+
+  try {
+    // APIリクエストURLをログに出力
+    const requestUrl = `${baseUrl}?${queryParams.toString()}`;
+    console.log("DMM 女優検索 API リクエストURL:", requestUrl);
+    
+    // API リクエスト
+    const response = await fetch(requestUrl);
+
+    console.log(
+      `DMM 女優検索 API レスポンスステータス: ${response.status} ${response.statusText}`
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `DMM ActressSearch API request failed: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    
+    // レスポンスの概要をログに出力
+    console.log(
+      `DMM 女優検索 API レスポンス概要: status=${data.result?.status}, result_count=${data.result?.result_count}, total_count=${data.result?.total_count}`
+    );
+
+    // レスポンスの形式を確認
+    if (!data || !data.result || !Array.isArray(data.result.actress)) {
+      throw new Error("Invalid API response format for ActressSearch");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching DMM ActressSearch API:", error);
+    // エラーをそのまま投げる
+    throw new Error(`DMM ActressSearch API request failed: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
@@ -367,27 +375,84 @@ export async function searchByActress(
 ): Promise<DmmItem[]> {
   try {
     console.log(`女優名で検索: "${actressName}", 取得件数: ${hits}`);
-    // 女優名をエンコード
     const encodedActressName = encodeURIComponent(actressName);
-    const response = await fetchDmmApi({
+
+    // 方法1: ActressSearchエンドポイントを使用して女優情報を取得する
+    console.log("方法1: ActressSearchエンドポイントを使用");
+    try {
+      const actressResponse = await fetchDmmActressApi({
+        keyword: encodedActressName,
+        hits: 10,
+        output: "json",
+      });
+      if (
+        actressResponse.result &&
+        Array.isArray(actressResponse.result.actress) &&
+        actressResponse.result.actress.length > 0
+      ) {
+        const firstActress = actressResponse.result.actress[0];
+        console.log(`女優情報: id=${firstActress.id}, name=${firstActress.name}`);
+        // 商品検索に女優IDを使用
+        const itemResponse = await fetchDmmApi({
+          site: "FANZA",
+          service: "digital",
+          floor: "videoa",
+          hits: hits,
+          sort: "rank",
+          actress: String(firstActress.id),
+          output: "json",
+        });
+        if (
+          itemResponse.result &&
+          Array.isArray(itemResponse.result.items) &&
+          itemResponse.result.items.length > 0
+        ) {
+          const sampleItems = itemResponse.result.items.slice(0, 2);
+          console.log(
+            `女優ID検索の結果サンプル (${sampleItems.length}件):`,
+            sampleItems.map((item) => ({
+              id: item.content_id,
+              title: item.title,
+              actress: item.iteminfo?.actress?.map((a) => a.name).join(", "),
+            }))
+          );
+          return itemResponse.result.items;
+        }
+      }
+      console.log("ActressSearchエンドポイントで結果が得られなかった");
+    } catch (actressError) {
+      console.error("女優検索APIでエラーが発生:", actressError);
+    }
+
+    // 方法2: 従来の方法でItemListエンドポイントを使用する
+    console.log("方法2: 従来の方法でItemListエンドポイントを使用");
+    const params = {
       site: "FANZA",
       service: "digital",
       floor: "videoa",
       hits: hits,
       sort: "rank",
-      actress: encodedActressName,
+      keyword: encodedActressName,
       output: "json",
-    });
-
-    if (!response.result || !Array.isArray(response.result.items)) {
-      console.error("無効なレスポンス形式:", response);
-      return [];
+    };
+    console.log("方法2: keywordパラメータを使用:", JSON.stringify(params));
+    const response = await fetchDmmApi(params);
+    if (response.result && Array.isArray(response.result.items)) {
+      const sampleItems = response.result.items.slice(0, 2);
+      console.log(
+        `方法2の結果サンプル (${sampleItems.length}件):`,
+        sampleItems.map((item) => ({
+          id: item.content_id,
+          title: item.title,
+          actress: item.iteminfo?.actress?.map((a) => a.name).join(", "),
+        }))
+      );
+      return response.result.items;
     }
-
-    return response.result.items;
+    return [];
   } catch (error) {
     console.error("女優名での検索に失敗:", error);
-    return []; // エラー時は空配列を返す
+    return [];
   }
 }
 
@@ -411,10 +476,13 @@ export async function searchByKeyword(
   } = {}
 ): Promise<DmmItem[]> {
   try {
-    console.log(`キーワードで検索: "${keyword}", 取得件数: ${hits}, オプション:`, options);
+    console.log(
+      `キーワードで検索: "${keyword}", 取得件数: ${hits}, オプション:`,
+      options
+    );
     // キーワードをエンコード
     const encodedKeyword = encodeURIComponent(keyword);
-    
+
     // 基本パラメータ
     const params: DmmApiParams = {
       site: "FANZA",
@@ -425,14 +493,15 @@ export async function searchByKeyword(
       keyword: encodedKeyword,
       output: "json",
     };
-    
+
     // 追加オプションがあれば追加
     if (options.floor) params.floor = options.floor;
     if (options.genre) params.genre = encodeURIComponent(options.genre);
     if (options.maker) params.maker = encodeURIComponent(options.maker);
     if (options.series) params.series = encodeURIComponent(options.series);
-    if (options.director) params.director = encodeURIComponent(options.director);
-    
+    if (options.director)
+      params.director = encodeURIComponent(options.director);
+
     const response = await fetchDmmApi(params);
 
     if (!response.result || !Array.isArray(response.result.items)) {

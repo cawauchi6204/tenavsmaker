@@ -5,7 +5,9 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const term = searchParams.get("term");
+    console.log("🚀 ~ GET ~ term:", term)
     const type = searchParams.get("type");
+    console.log("🚀 ~ GET ~ type:", type)
     const hits = searchParams.get("hits")
       ? parseInt(searchParams.get("hits") as string)
       : 100;
