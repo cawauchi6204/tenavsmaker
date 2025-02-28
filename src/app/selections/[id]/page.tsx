@@ -48,6 +48,9 @@ export default async function SelectionPage({
 
   return (
     <main className="container mx-auto pb-8">
+      <Link href="/" className="text-blue-500 text-5xl font-bold mb-6 block underline">
+        ここから生成できます!
+      </Link>
       <h1 className="text-2xl font-bold mb-6 text-white">{selection.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {items.map((item) => (
