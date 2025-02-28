@@ -58,24 +58,45 @@ export default function AVSelector({
   const [commentTargetAV, setCommentTargetAV] = useState<AV | null>(null);
   const [commentText, setCommentText] = useState("");
   const [shareTitle, setShareTitle] = useState("名刺代わりのAV10選");
+  // チェックされた検索結果を追跡するステート
+  const [checkedResults, setCheckedResults] = useState<string[]>([]);
 
+  // 10個のスライドを作成
   const slides: AV[] = Array(10)
     .fill(null)
-    .map((_, index) => ({
-      id: index + 1,
-      title: "ここをタップしてAVを検索してください",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
-    }));
+    .map((_, index) => {
+      // インデックスに対応する選択済みAVがあればそれを使用
+      if (index < selectedAVs.length) {
+        return selectedAVs[index];
+      }
+
+      // それ以外はデフォルトのスロットを返す
+      return {
+        id: index + 1,
+        title: "ここをタップしてAVを検索してください",
+        image:
+          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
+      };
+    });
 
   const handleAVSelect = (av: AV) => {
     setSelectedAVs((prev) => {
+      // 既に同じIDのAVが選択されている場合は何もしない
       const isSelected = prev.find((a) => a.id === av.id);
       if (isSelected) {
-        return prev.filter((a) => a.id !== av.id);
-      } else {
-        return [av];
+        return prev;
       }
+
+      // 既に10個選択されている場合は何もしない
+      if (prev.length >= 10) {
+        alert(
+          "既に10個選択されています。新しく選択するには、既存の選択を解除してください。"
+        );
+        return prev;
+      }
+
+      // 新しい選択を追加（既存の選択は維持）
+      return [...prev, av];
     });
   };
 
@@ -103,6 +124,7 @@ export default function AVSelector({
 
       // データが配列かどうかを確認
       if (Array.isArray(data)) {
+        console.log("検索結果:", data); // 検索結果をコンソールに出力
         setSearchResults(data);
       } else if (data.error) {
         // エラーメッセージがある場合
@@ -170,6 +192,68 @@ export default function AVSelector({
     setShowCommentModal(false);
     setCommentTargetAV(null);
     setCommentText("");
+  };
+
+  // チェックボックスの状態を変更するハンドラー
+  const handleCheckResult = (id: string, checked: boolean) => {
+    setCheckedResults((prev) => {
+      if (checked) {
+        return [...prev, id];
+      } else {
+        return prev.filter((resultId) => resultId !== id);
+      }
+    });
+  };
+
+  // チェックされた検索結果を10選に追加する関数
+  const handleAddCheckedToSelection = () => {
+    // チェックされた検索結果を取得
+    const checkedItems = searchResults.filter((result) =>
+      checkedResults.includes(result.id)
+    );
+
+    // 現在の選択数を確認
+    if (selectedAVs.length + checkedItems.length > 10) {
+      alert(
+        `現在${selectedAVs.length}個選択されています。あと${
+          10 - selectedAVs.length
+        }個まで追加できます。`
+      );
+      return;
+    }
+
+    // 選択されたAVに追加
+    const newSelectedAVs = [...selectedAVs];
+
+    checkedItems.forEach((item) => {
+      // 既に選択されているIDがないか確認
+      const existingIndex = newSelectedAVs.findIndex(
+        (av) => av.title === item.title && av.image === item.image_url
+      );
+
+      if (existingIndex === -1) {
+        // 新しいIDを割り当て（現在の最大ID + 1）
+        const maxId =
+          newSelectedAVs.length > 0
+            ? Math.max(...newSelectedAVs.map((av) => av.id))
+            : 0;
+
+        const newAV: AV = {
+          id: maxId + 1,
+          title: item.title,
+          image: item.image_url,
+        };
+
+        newSelectedAVs.push(newAV);
+      }
+    });
+
+    setSelectedAVs(newSelectedAVs);
+
+    // チェックをクリア
+    setCheckedResults([]);
+    // モーダルを閉じる
+    setShowSearchModal(false);
   };
 
   return (
@@ -249,12 +333,27 @@ export default function AVSelector({
                             : ""
                         }`}
                       >
-                        <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4">
-                          <p className="text-center text-xs md:text-sm px-2 md:px-4">
-                            ここをタップして
-                            <br />
-                            AVを検索してください
-                          </p>
+                        <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4 overflow-hidden">
+                          {selectedAVs.find((av) => av.id === slide.id) ? (
+                            <>
+                              <img
+                                src={slide.image}
+                                alt={slide.title}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 p-1">
+                                <p className="text-white text-xs truncate">
+                                  {slide.title}
+                                </p>
+                              </div>
+                            </>
+                          ) : (
+                            <p className="text-center text-xs md:text-sm px-2 md:px-4">
+                              ここをタップして
+                              <br />
+                              AVを検索してください
+                            </p>
+                          )}
                         </div>
                         <button
                           className="w-full py-1 md:py-2 px-2 bg-[#808080] md:px-4 text-white rounded transition-colors text-xs md:text-sm"
@@ -356,97 +455,123 @@ export default function AVSelector({
             <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">検索結果</h2>
-                <button
-                  onClick={() => setShowSearchModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <X className="h-6 w-6" />
-                </button>
+                <div className="flex items-center gap-2">
+                  {checkedResults.length > 0 && (
+                    <button
+                      onClick={handleAddCheckedToSelection}
+                      className="px-4 py-2 bg-[#ffa31a] text-white rounded hover:bg-[#ff9900] text-sm"
+                    >
+                      選択した{checkedResults.length}件をセット
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowSearchModal(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {searchResults.map((result) => (
                   <div
                     key={result.id}
-                    className="border-8 rounded-lg p-4 cursor-pointer hover:border-[#ffa31a]"
-                    onClick={() => {
-                      handleAVSelect({
-                        id: parseInt(result.id),
-                        title: result.title,
-                        image: result.image_url,
-                      });
-                    }}
+                    className="border-8 rounded-lg p-4 cursor-pointer hover:border-[#ffa31a] relative"
                   >
-                    <img
-                      src={result.image_url}
-                      alt={result.title}
-                      className="w-full aspect-[3/4] object-cover rounded mb-2"
-                    />
-                    <p className="text-sm font-bold mb-1 line-clamp-2">
-                      {result.title}
-                    </p>
-                    {result.actress && (
-                      <p className="text-xs text-gray-700 mb-1">
-                        <span className="font-semibold">女優:</span>{" "}
-                        {result.actress}
+                    <div className="absolute top-2 right-2 z-10">
+                      <input
+                        type="checkbox"
+                        className="h-5 w-5 cursor-pointer"
+                        checked={checkedResults.includes(result.id)}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          handleCheckResult(result.id, e.target.checked);
+                        }}
+                      />
+                    </div>
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => {
+                        handleAVSelect({
+                          id: parseInt(result.id),
+                          title: result.title,
+                          image: result.image_url,
+                        });
+                      }}
+                    >
+                      <img
+                        src={result.image_url}
+                        alt={result.title}
+                        className="w-full aspect-[3/4] object-cover rounded mb-2"
+                      />
+                      <p className="text-sm font-bold mb-1 text-black">
+                        <span className="font-semibold">タイトル:</span>{" "}
+                        {result.title}
                       </p>
-                    )}
-                    {result.maker && (
-                      <p className="text-xs text-gray-700 mb-1">
-                        <span className="font-semibold">メーカー:</span>{" "}
-                        {result.maker}
-                      </p>
-                    )}
-                    {result.series && (
-                      <p className="text-xs text-gray-700 mb-1">
-                        <span className="font-semibold">シリーズ:</span>{" "}
-                        {result.series}
-                      </p>
-                    )}
-                    {result.director && (
-                      <p className="text-xs text-gray-700 mb-1">
-                        <span className="font-semibold">監督:</span>{" "}
-                        {result.director}
-                      </p>
-                    )}
-                    {result.genres && result.genres.length > 0 && (
-                      <p className="text-xs text-gray-700 mb-1">
-                        <span className="font-semibold">ジャンル:</span>
-                        <span className="flex flex-wrap gap-1 mt-1">
-                          {result.genres.slice(0, 3).map((genre, idx) => (
-                            <span
-                              key={idx}
-                              className="bg-gray-100 px-1 rounded text-[10px]"
-                            >
-                              {genre}
-                            </span>
-                          ))}
-                          {result.genres.length > 3 && (
-                            <span className="text-[10px] text-gray-500">
-                              +{result.genres.length - 3}
-                            </span>
-                          )}
-                        </span>
-                      </p>
-                    )}
-                    <div className="flex justify-between items-center mt-2">
-                      {result.date && (
-                        <p className="text-xs text-gray-600">{result.date}</p>
-                      )}
-                      {result.price && (
-                        <p className="text-xs font-bold text-[#ffa31a]">
-                          {result.price}
+                      {result.actress && (
+                        <p className="text-xs text-gray-700 mb-1">
+                          <span className="font-semibold">女優:</span>{" "}
+                          {result.actress}
                         </p>
                       )}
+                      {result.maker && (
+                        <p className="text-xs text-gray-700 mb-1">
+                          <span className="font-semibold">メーカー:</span>{" "}
+                          {result.maker}
+                        </p>
+                      )}
+                      {result.series && (
+                        <p className="text-xs text-gray-700 mb-1">
+                          <span className="font-semibold">シリーズ:</span>{" "}
+                          {result.series}
+                        </p>
+                      )}
+                      {result.director && (
+                        <p className="text-xs text-gray-700 mb-1">
+                          <span className="font-semibold">監督:</span>{" "}
+                          {result.director}
+                        </p>
+                      )}
+                      {result.genres && result.genres.length > 0 && (
+                        <p className="text-xs text-gray-700 mb-1">
+                          <span className="font-semibold">ジャンル:</span>
+                          <span className="flex flex-wrap gap-1 mt-1">
+                            {result.genres.slice(0, 3).map((genre, idx) => (
+                              <span
+                                key={idx}
+                                className="bg-gray-100 px-1 rounded text-[10px]"
+                              >
+                                {genre}
+                              </span>
+                            ))}
+                            {result.genres.length > 3 && (
+                              <span className="text-[10px] text-gray-500">
+                                +{result.genres.length - 3}
+                              </span>
+                            )}
+                          </span>
+                        </p>
+                      )}
+                      <div className="flex justify-between items-center mt-2">
+                        {result.date && (
+                          <p className="text-xs text-gray-600">{result.date}</p>
+                        )}
+                        {result.price && (
+                          <p className="text-xs font-bold text-[#ffa31a]">
+                            {result.price}
+                          </p>
+                        )}
+                      </div>
+                      <a
+                        href={result.fanza_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full text-center mt-2 text-xs bg-[#ffa31a] text-white py-1 px-2 rounded hover:bg-[#ff9900]"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        FANZAで見る
+                      </a>
                     </div>
-                    <a
-                      href={result.fanza_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full text-center mt-2 text-xs bg-[#ffa31a] text-white py-1 px-2 rounded hover:bg-[#ff9900]"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      FANZAで見る
-                    </a>
                   </div>
                 ))}
               </div>
