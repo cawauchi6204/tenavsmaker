@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     const type = searchParams.get("type");
     const hits = searchParams.get("hits")
       ? parseInt(searchParams.get("hits") as string)
-      : 10;
+      : 100;
 
     // 追加のオプションパラメータを取得
     const floor = searchParams.get("floor") || undefined;

@@ -327,7 +327,7 @@ export async function fetchDmmApi(
  */
 export async function searchByTitle(
   keyword: string,
-  hits: number = 10
+  hits: number = 100
 ): Promise<DmmItem[]> {
   try {
     console.log(`タイトルで検索: "${keyword}", 取得件数: ${hits}`);
@@ -363,7 +363,7 @@ export async function searchByTitle(
  */
 export async function searchByActress(
   actressName: string,
-  hits: number = 10
+  hits: number = 100
 ): Promise<DmmItem[]> {
   try {
     console.log(`女優名で検索: "${actressName}", 取得件数: ${hits}`);
@@ -400,7 +400,7 @@ export async function searchByActress(
  */
 export async function searchByKeyword(
   keyword: string,
-  hits: number = 10,
+  hits: number = 100,
   options: {
     floor?: string;
     sort?: string;
