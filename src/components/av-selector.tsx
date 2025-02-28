@@ -12,8 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import dayjs from "dayjs";
 
 interface AV {
   id: number;
@@ -37,18 +35,7 @@ interface SearchResult {
   director?: string;
 }
 
-interface AVSelectorProps {
-  initialRecentSelections: {
-    id: string;
-    title: string;
-    description: string;
-    created_at: string;
-  }[];
-}
-
-export default function AVSelector({
-  initialRecentSelections,
-}: AVSelectorProps) {
+export default function AVSelector() {
   const [selectedAVs, setSelectedAVs] = useState<AV[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -150,14 +137,17 @@ export default function AVSelector({
       }
 
       console.log("保存成功:", data);
-      
+
       // 保存成功後にTwitterシェア
       const baseText = `#${shareTitle}`;
       const selectionUrl = `${window.location.origin}/selections/${data.selection.id}`;
       const shareText = encodeURIComponent(
         `${baseText}\n${selectionUrl}\n\n#名刺代わりのAV10選メーカー`
       );
-      window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank");
+      window.open(
+        `https://twitter.com/intent/tweet?text=${shareText}`,
+        "_blank"
+      );
     } catch (error) {
       console.error("シェアエラー:", error);
       alert("シェア処理中にエラーが発生しました。もう一度お試しください。");
@@ -285,10 +275,12 @@ export default function AVSelector({
       setShowSearchModal(false);
     } catch (error) {
       console.error("選択アイテム追加エラー:", error);
-      alert("選択アイテムの追加中にエラーが発生しました。もう一度お試しください。");
+      alert(
+        "選択アイテムの追加中にエラーが発生しました。もう一度お試しください。"
+      );
     }
   };
-  
+
   // 選択済みAVを削除する関数
   const handleRemoveAV = (e: React.MouseEvent, avId: number) => {
     e.stopPropagation(); // カード全体のクリックイベントを防止
@@ -298,7 +290,7 @@ export default function AVSelector({
   // handleAVSelect関数は不要になったため削除
 
   return (
-    <div className="min-h-screen">
+    <div>
       <div className="max-w-[800px] mx-auto px-4 pb-8">
         <div className="flex items-center justify-center gap-2 mb-4"></div>
 
@@ -473,19 +465,6 @@ export default function AVSelector({
           リセット
         </button>
         {/* これまでの名刺代わりのAV10選 */}
-        <div className="flex flex-col gap-2 mt-8">
-          <h1 className="font-bold text-center text-white">
-            これまで作成された名刺代わりのAV10選
-          </h1>
-          {initialRecentSelections.map((selection) => (
-            <Link key={selection.id} href={`/selections/${selection.id}`} className="underline text-[#ffa31a]">
-              <h3>
-                {selection.title}{" "}
-                {dayjs(selection.created_at).format("YYYY/MM/DD")}作成
-              </h3>
-            </Link>
-          ))}
-        </div>
         {/* <footer className="mt-8 text-center text-sm text-[#666] border-t border-[#eee] pt-8">
           <a href="#" className="hover:text-[#333] transition-colors">
             プライバシーポリシー
@@ -516,7 +495,12 @@ export default function AVSelector({
                   <div
                     key={result.id}
                     className="border-8 rounded-lg p-4 cursor-pointer hover:border-[#ffa31a] relative"
-                    onClick={() => handleCheckResult(result.id, !checkedResults.includes(result.id))}
+                    onClick={() =>
+                      handleCheckResult(
+                        result.id,
+                        !checkedResults.includes(result.id)
+                      )
+                    }
                   >
                     <div className="absolute top-2 right-2 z-10">
                       <input
@@ -606,7 +590,7 @@ export default function AVSelector({
                   </div>
                 ))}
               </div>
-              
+
               {/* セットボタン - モーダルの下部に固定表示 */}
               <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-center z-[1000]">
                 <button

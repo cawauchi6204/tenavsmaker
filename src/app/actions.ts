@@ -123,7 +123,49 @@ export async function getRecentSelections() {
   const selections = await sql`
     SELECT * FROM selections
     ORDER BY created_at DESC
-    -- LIMIT 10;
+    LIMIT 10;
   `;
   return selections as Selection[];
+}
+
+/**
+ * 最近作成されたセレクションとそれに関連するAVパッケージを取得します。
+ * 各セレクションごとに最大5つのパッケージを取得します。
+ */
+export async function getRecentSelectionsWithItems() {
+  // キャッシュを使用せずに常に最新のデータを取得
+  const { revalidatePath } = await import('next/cache');
+  
+  // 現在のパスを再検証してキャッシュを無効化
+  revalidatePath('/');
+  
+  // 最近のセレクションを取得（最大10件）
+  const selections = await sql`
+    SELECT * FROM selections
+    ORDER BY created_at DESC
+    LIMIT 10;
+  `;
+  
+  // 各セレクションに関連するアイテムを取得
+  const result = [];
+  
+  for (const selection of selections) {
+    // 各セレクションに関連するアイテムを最大5つ取得
+    const items = await sql`
+      SELECT si.*, p.title AS package_title, p.image_url, p.fanza_url, p.description, p.sample_movie_url
+      FROM selection_items si
+      JOIN packages p ON si.package_id = p.id
+      WHERE si.selection_id = ${selection.id}
+      ORDER BY si.item_order
+      LIMIT 5;
+    `;
+    
+    // セレクションとそのアイテムをオブジェクトにまとめる
+    result.push({
+      selection,
+      items
+    });
+  }
+  
+  return result;
 }
