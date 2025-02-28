@@ -436,14 +436,6 @@ export default function AVSelector({
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">検索結果</h2>
                 <div className="flex items-center gap-2">
-                  {checkedResults.length > 0 && (
-                    <button
-                      onClick={handleAddCheckedToSelection}
-                      className="px-4 py-2 bg-[#ffa31a] text-white rounded hover:bg-[#ff9900] text-sm"
-                    >
-                      選択した{checkedResults.length}件をセット
-                    </button>
-                  )}
                   <button
                     onClick={() => setShowSearchModal(false)}
                     className="text-gray-500 hover:text-gray-700"
@@ -546,6 +538,19 @@ export default function AVSelector({
                     </div>
                   </div>
                 ))}
+              </div>
+              
+              {/* セットボタン - モーダルの下部に固定表示 */}
+              <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-center z-[1000]">
+                <button
+                  onClick={handleAddCheckedToSelection}
+                  disabled={checkedResults.length === 0}
+                  className="px-8 py-3 bg-[#ffa31a] text-white rounded-lg font-bold hover:bg-[#ff9900] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {checkedResults.length > 0
+                    ? `選択した${checkedResults.length}作品をセット`
+                    : "作品を選択してください"}
+                </button>
               </div>
             </div>
           </div>
