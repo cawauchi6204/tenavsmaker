@@ -84,6 +84,12 @@ export async function addSelectionItem({
  * パッケージ情報もJOINして取得します。
  */
 export async function getSelectionItems(selectionId: string) {
+  // キャッシュを使用せずに常に最新のデータを取得
+  const { revalidatePath } = await import('next/cache');
+  
+  // 選択肢の詳細ページのパスを再検証してキャッシュを無効化
+  revalidatePath(`/selections/${selectionId}`);
+  
   const items = await sql`
     SELECT si.*, p.title AS package_title, p.image_url, p.fanza_url, p.description, p.sample_movie_url
     FROM selection_items si
@@ -95,6 +101,12 @@ export async function getSelectionItems(selectionId: string) {
 }
 
 export async function getSelection(selectionId: string) {
+  // キャッシュを使用せずに常に最新のデータを取得
+  const { revalidatePath } = await import('next/cache');
+  
+  // 選択肢の詳細ページのパスを再検証してキャッシュを無効化
+  revalidatePath(`/selections/${selectionId}`);
+  
   const selection = await sql`
     SELECT * FROM selections WHERE id = ${selectionId}
   `;
@@ -102,6 +114,12 @@ export async function getSelection(selectionId: string) {
 }
 
 export async function getRecentSelections() {
+  // キャッシュを使用せずに常に最新のデータを取得
+  const { revalidatePath } = await import('next/cache');
+  
+  // 現在のパスを再検証してキャッシュを無効化
+  revalidatePath('/');
+  
   const selections = await sql`
     SELECT * FROM selections
     ORDER BY created_at DESC

@@ -3,6 +3,9 @@ import Image from "next/image";
 import { Metadata } from "next";
 import Link from "next/link";
 
+// ページを常に動的にレンダリングするように設定
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
