@@ -457,6 +457,7 @@ export default function AVSelector({
                   <div
                     key={result.id}
                     className="border-8 rounded-lg p-4 cursor-pointer hover:border-[#ffa31a] relative"
+                    onClick={() => handleCheckResult(result.id, !checkedResults.includes(result.id))}
                   >
                     <div className="absolute top-2 right-2 z-10">
                       <input
