@@ -70,35 +70,16 @@ export default function AVSelector({
         return selectedAVs[index];
       }
 
-      // それ以外はデフォルトのスロットを返す
+      // それ以外は空のスロットを返す
       return {
         id: index + 1,
-        title: "ここをタップしてAVを検索してください",
+        title: "空きスロット",
         image:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screencapture-tenbooksmaker-2025-02-11-14_16_15-OwirlbOWRgLYmBj8CncP9ydlGt4Sck.png",
       };
     });
 
-  const handleAVSelect = (av: AV) => {
-    setSelectedAVs((prev) => {
-      // 既に同じIDのAVが選択されている場合は何もしない
-      const isSelected = prev.find((a) => a.id === av.id);
-      if (isSelected) {
-        return prev;
-      }
-
-      // 既に10個選択されている場合は何もしない
-      if (prev.length >= 10) {
-        alert(
-          "既に10個選択されています。新しく選択するには、既存の選択を解除してください。"
-        );
-        return prev;
-      }
-
-      // 新しい選択を追加（既存の選択は維持）
-      return [...prev, av];
-    });
-  };
+  // 空きスロットに自動的にAVをセットするため、個別選択関数は不要
 
   const handleSearch = async () => {
     try {
@@ -256,6 +237,8 @@ export default function AVSelector({
     setShowSearchModal(false);
   };
 
+  // handleAVSelect関数は不要になったため削除
+
   return (
     <div className="min-h-screen">
       <div className="max-w-[800px] mx-auto px-4 pb-8">
@@ -324,7 +307,6 @@ export default function AVSelector({
                     <div
                       key={slide.id}
                       className="w-[calc((100%-1rem)/3)] flex-shrink-0"
-                      onClick={() => handleAVSelect(slide)}
                     >
                       <Card
                         className={`p-2 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full ${
@@ -349,9 +331,7 @@ export default function AVSelector({
                             </>
                           ) : (
                             <p className="text-center text-xs md:text-sm px-2 md:px-4">
-                              ここをタップして
-                              <br />
-                              AVを検索してください
+                              空きスロット
                             </p>
                           )}
                         </div>
@@ -489,16 +469,7 @@ export default function AVSelector({
                         }}
                       />
                     </div>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => {
-                        handleAVSelect({
-                          id: parseInt(result.id),
-                          title: result.title,
-                          image: result.image_url,
-                        });
-                      }}
-                    >
+                    <div className="cursor-pointer">
                       <img
                         src={result.image_url}
                         alt={result.title}
