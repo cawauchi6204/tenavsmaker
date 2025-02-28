@@ -340,7 +340,7 @@ export async function searchByTitle(
   try {
     console.log(`タイトルで検索: "${keyword}", 取得件数: ${hits}`);
     // キーワードをエンコード
-    const encodedKeyword = encodeURIComponent(keyword);
+    const encodedKeyword = keyword;
     const response = await fetchDmmApi({
       site: "FANZA",
       service: "digital",
@@ -375,7 +375,7 @@ export async function searchByActress(
 ): Promise<DmmItem[]> {
   try {
     console.log(`女優名で検索: "${actressName}", 取得件数: ${hits}`);
-    const encodedActressName = encodeURIComponent(actressName);
+    const encodedActressName = actressName;
 
     // 方法1: ActressSearchエンドポイントを使用して女優情報を取得する
     console.log("方法1: ActressSearchエンドポイントを使用");
@@ -481,7 +481,7 @@ export async function searchByKeyword(
       options
     );
     // キーワードをエンコード
-    const encodedKeyword = encodeURIComponent(keyword);
+    const encodedKeyword = keyword;
 
     // 基本パラメータ
     const params: DmmApiParams = {
@@ -496,11 +496,10 @@ export async function searchByKeyword(
 
     // 追加オプションがあれば追加
     if (options.floor) params.floor = options.floor;
-    if (options.genre) params.genre = encodeURIComponent(options.genre);
-    if (options.maker) params.maker = encodeURIComponent(options.maker);
-    if (options.series) params.series = encodeURIComponent(options.series);
-    if (options.director)
-      params.director = encodeURIComponent(options.director);
+    if (options.genre) params.genre = options.genre;
+    if (options.maker) params.maker = options.maker;
+    if (options.series) params.series = options.series;
+    if (options.director) params.director = options.director;
 
     const response = await fetchDmmApi(params);
 
