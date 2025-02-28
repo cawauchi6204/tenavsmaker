@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-  manifest: "/manifest.json",
+  manifest: "/site.webmanifest",
   viewport: {
     width: "device-width",
     initialScale: 1,

@@ -27,6 +27,13 @@ interface SearchResult {
   title: string;
   image_url: string;
   fanza_url: string;
+  actress?: string;
+  maker?: string;
+  date?: string;
+  price?: string;
+  genres?: string[];
+  series?: string;
+  director?: string;
 }
 
 interface AVSelectorProps {
@@ -74,18 +81,45 @@ export default function AVSelector({
 
   const handleSearch = async () => {
     try {
+      // 検索パラメータを作成
+      const params: Record<string, string> = {
+        term: searchTerm,
+        type: searchType,
+      };
+
+      // キーワード検索の場合、追加のオプションを設定できるようにする
+      // 現在はシンプルな実装だが、将来的にはUIで選択できるようにすることも可能
+      if (searchType === "keyword") {
+        // 例: 並び順を日付順に
+        params.sort = "date";
+        // 例: 取得件数を増やす
+        params.hits = "20";
+      }
+
       const response = await fetch(
-        "/api/search?" +
-          new URLSearchParams({
-            term: searchTerm,
-            type: searchType,
-          })
+        "/api/search?" + new URLSearchParams(params)
       );
       const data = await response.json();
-      setSearchResults(data);
+
+      // データが配列かどうかを確認
+      if (Array.isArray(data)) {
+        setSearchResults(data);
+      } else if (data.error) {
+        // エラーメッセージがある場合
+        console.error("Search error:", data.error);
+        alert(`検索エラー: ${data.error}`);
+        setSearchResults([]);
+      } else {
+        // 予期しない形式の場合は空配列を設定
+        console.error("Unexpected response format:", data);
+        setSearchResults([]);
+      }
+
       setShowSearchModal(true);
     } catch (error) {
       console.error("Search failed:", error);
+      alert("検索に失敗しました。もう一度お試しください。");
+      setSearchResults([]);
     }
   };
 
@@ -146,12 +180,13 @@ export default function AVSelector({
         <div className="flex items-start justify-center flex-col gap-2 mb-8">
           <div className="flex items-center gap-2">
             <Select value={searchType} onValueChange={setSearchType}>
-              <SelectTrigger className="w-[100px] bg-white border-[#ccc] text-[#666] hover:bg-gray-50">
+              <SelectTrigger className="w-[120px] bg-white border-[#ccc] text-[#666] hover:bg-gray-50">
                 <SelectValue placeholder="タイトル" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="title">タイトル</SelectItem>
                 <SelectItem value="actress">女優名</SelectItem>
+                <SelectItem value="keyword">キーワード</SelectItem>
               </SelectContent>
             </Select>
             <span>で探す</span>
@@ -162,7 +197,11 @@ export default function AVSelector({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={
-                  searchType === "title" ? "タイトルで探す" : "女優名で探す"
+                  searchType === "title"
+                    ? "タイトルで探す"
+                    : searchType === "actress"
+                    ? "女優名で探す"
+                    : "キーワードで探す"
                 }
                 className="pl-8 bg-white border-[#ccc] text-[#666] hover:bg-gray-50 text-base"
                 style={{ fontSize: "16px" }}
@@ -342,7 +381,72 @@ export default function AVSelector({
                       alt={result.title}
                       className="w-full aspect-[3/4] object-cover rounded mb-2"
                     />
-                    <p className="text-sm">{result.title}</p>
+                    <p className="text-sm font-bold mb-1 line-clamp-2">
+                      {result.title}
+                    </p>
+                    {result.actress && (
+                      <p className="text-xs text-gray-700 mb-1">
+                        <span className="font-semibold">女優:</span>{" "}
+                        {result.actress}
+                      </p>
+                    )}
+                    {result.maker && (
+                      <p className="text-xs text-gray-700 mb-1">
+                        <span className="font-semibold">メーカー:</span>{" "}
+                        {result.maker}
+                      </p>
+                    )}
+                    {result.series && (
+                      <p className="text-xs text-gray-700 mb-1">
+                        <span className="font-semibold">シリーズ:</span>{" "}
+                        {result.series}
+                      </p>
+                    )}
+                    {result.director && (
+                      <p className="text-xs text-gray-700 mb-1">
+                        <span className="font-semibold">監督:</span>{" "}
+                        {result.director}
+                      </p>
+                    )}
+                    {result.genres && result.genres.length > 0 && (
+                      <p className="text-xs text-gray-700 mb-1">
+                        <span className="font-semibold">ジャンル:</span>
+                        <span className="flex flex-wrap gap-1 mt-1">
+                          {result.genres.slice(0, 3).map((genre, idx) => (
+                            <span
+                              key={idx}
+                              className="bg-gray-100 px-1 rounded text-[10px]"
+                            >
+                              {genre}
+                            </span>
+                          ))}
+                          {result.genres.length > 3 && (
+                            <span className="text-[10px] text-gray-500">
+                              +{result.genres.length - 3}
+                            </span>
+                          )}
+                        </span>
+                      </p>
+                    )}
+                    <div className="flex justify-between items-center mt-2">
+                      {result.date && (
+                        <p className="text-xs text-gray-600">{result.date}</p>
+                      )}
+                      {result.price && (
+                        <p className="text-xs font-bold text-[#ffa31a]">
+                          {result.price}
+                        </p>
+                      )}
+                    </div>
+                    <a
+                      href={result.fanza_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full text-center mt-2 text-xs bg-[#ffa31a] text-white py-1 px-2 rounded hover:bg-[#ff9900]"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      FANZAで見る
+                    </a>
                   </div>
                 ))}
               </div>
