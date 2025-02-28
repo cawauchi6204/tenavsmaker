@@ -474,11 +474,11 @@ export default function AVSelector({
         </button>
         {/* これまでの名刺代わりのAV10選 */}
         <div className="flex flex-col gap-2 mt-8">
-          <h1 className="font-bold text-center">
+          <h1 className="font-bold text-center text-white">
             これまで作成された名刺代わりのAV10選
           </h1>
           {initialRecentSelections.map((selection) => (
-            <Link key={selection.id} href={`/selections/${selection.id}`} className="underline">
+            <Link key={selection.id} href={`/selections/${selection.id}`} className="underline text-[#ffa31a]">
               <h3>
                 {selection.title}{" "}
                 {dayjs(selection.created_at).format("YYYY/MM/DD")}作成
