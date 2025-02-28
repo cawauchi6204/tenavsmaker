@@ -236,6 +236,12 @@ export default function AVSelector({
     // モーダルを閉じる
     setShowSearchModal(false);
   };
+  
+  // 選択済みAVを削除する関数
+  const handleRemoveAV = (e: React.MouseEvent, avId: number) => {
+    e.stopPropagation(); // カード全体のクリックイベントを防止
+    setSelectedAVs((prev) => prev.filter((av) => av.id !== avId));
+  };
 
   // handleAVSelect関数は不要になったため削除
 
@@ -315,14 +321,23 @@ export default function AVSelector({
                             : ""
                         }`}
                       >
-                        <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4 overflow-hidden">
-                          {selectedAVs.find((av) => av.id === slide.id) ? (
+                        <div className="w-full aspect-[3/4] bg-gray-50 rounded flex items-center justify-center mb-2 md:mb-4 overflow-hidden relative">
+                          {slide.title !== "空きスロット" ? (
                             <>
                               <img
                                 src={slide.image}
                                 alt={slide.title}
                                 className="w-full h-full object-cover"
                               />
+                              {/* バツボタンを追加 - 位置とz-indexを調整 */}
+                              <div className="absolute top-1 right-1 z-50">
+                                <button
+                                  className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 shadow-md"
+                                  onClick={(e) => handleRemoveAV(e, slide.id)}
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
                               <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 p-1">
                                 <p className="text-white text-xs truncate">
                                   {slide.title}
