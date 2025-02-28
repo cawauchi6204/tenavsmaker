@@ -478,7 +478,7 @@ export default function AVSelector({
             これまで作成された名刺代わりのAV10選
           </h1>
           {initialRecentSelections.map((selection) => (
-            <Link key={selection.id} href={`/selections/${selection.id}`}>
+            <Link key={selection.id} href={`/selections/${selection.id}`} className="underline">
               <h3>
                 {selection.title}{" "}
                 {dayjs(selection.created_at).format("YYYY/MM/DD")}作成
