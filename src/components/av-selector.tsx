@@ -20,6 +20,7 @@ interface AV {
   title: string;
   image: string;
   comment?: string;
+  packageId?: string; // データベースのpackage_idを保持するためのプロパティ
 }
 
 interface SearchResult {
@@ -126,12 +127,41 @@ export default function AVSelector({
     }
   };
 
-  const handleShare = () => {
-    const baseText = `#${shareTitle}`;
-    const shareText = encodeURIComponent(
-      `${baseText}\n\n\n#名刺代わりのAV10選メーカー`
-    );
-    window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank");
+  const handleShare = async () => {
+    try {
+      // データベースに保存
+      const response = await fetch("/api/selections", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: shareTitle,
+          selectedAVs: selectedAVs,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("保存エラー:", data.error);
+        alert(`保存に失敗しました: ${data.error}`);
+        return;
+      }
+
+      console.log("保存成功:", data);
+      
+      // 保存成功後にTwitterシェア
+      const baseText = `#${shareTitle}`;
+      const selectionUrl = `${window.location.origin}/selections/${data.selection.id}`;
+      const shareText = encodeURIComponent(
+        `${baseText}\n${selectionUrl}\n\n#名刺代わりのAV10選メーカー`
+      );
+      window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank");
+    } catch (error) {
+      console.error("シェアエラー:", error);
+      alert("シェア処理中にエラーが発生しました。もう一度お試しください。");
+    }
   };
 
   const handleReset = () => {
@@ -187,54 +217,76 @@ export default function AVSelector({
   };
 
   // チェックされた検索結果を10選に追加する関数
-  const handleAddCheckedToSelection = () => {
-    // チェックされた検索結果を取得
-    const checkedItems = searchResults.filter((result) =>
-      checkedResults.includes(result.id)
-    );
-
-    // 現在の選択数を確認
-    if (selectedAVs.length + checkedItems.length > 10) {
-      alert(
-        `現在${selectedAVs.length}個選択されています。あと${
-          10 - selectedAVs.length
-        }個まで追加できます。`
-      );
-      return;
-    }
-
-    // 選択されたAVに追加
-    const newSelectedAVs = [...selectedAVs];
-
-    checkedItems.forEach((item) => {
-      // 既に選択されているIDがないか確認
-      const existingIndex = newSelectedAVs.findIndex(
-        (av) => av.title === item.title && av.image === item.image_url
+  const handleAddCheckedToSelection = async () => {
+    try {
+      // チェックされた検索結果を取得
+      const checkedItems = searchResults.filter((result) =>
+        checkedResults.includes(result.id)
       );
 
-      if (existingIndex === -1) {
-        // 新しいIDを割り当て（現在の最大ID + 1）
-        const maxId =
-          newSelectedAVs.length > 0
-            ? Math.max(...newSelectedAVs.map((av) => av.id))
-            : 0;
-
-        const newAV: AV = {
-          id: maxId + 1,
-          title: item.title,
-          image: item.image_url,
-        };
-
-        newSelectedAVs.push(newAV);
+      // 現在の選択数を確認
+      if (selectedAVs.length + checkedItems.length > 10) {
+        alert(
+          `現在${selectedAVs.length}個選択されています。あと${
+            10 - selectedAVs.length
+          }個まで追加できます。`
+        );
+        return;
       }
-    });
 
-    setSelectedAVs(newSelectedAVs);
+      // 選択されたAVに追加
+      const newSelectedAVs = [...selectedAVs];
 
-    // チェックをクリア
-    setCheckedResults([]);
-    // モーダルを閉じる
-    setShowSearchModal(false);
+      // 各アイテムをデータベースに保存し、ローカルステートに追加
+      for (const item of checkedItems) {
+        // 既に選択されているIDがないか確認
+        const existingIndex = newSelectedAVs.findIndex(
+          (av) => av.title === item.title && av.image === item.image_url
+        );
+
+        if (existingIndex === -1) {
+          // パッケージをデータベースに保存
+          await fetch("/api/packages", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: item.id,
+              title: item.title,
+              image_url: item.image_url,
+              fanza_url: item.fanza_url,
+              description: item.title, // 詳細な説明がない場合はタイトルを使用
+            }),
+          });
+
+          // 新しいIDを割り当て（現在の最大ID + 1）
+          const maxId =
+            newSelectedAVs.length > 0
+              ? Math.max(...newSelectedAVs.map((av) => av.id))
+              : 0;
+
+          const newAV: AV = {
+            id: maxId + 1,
+            title: item.title,
+            image: item.image_url,
+            packageId: item.id, // データベースのpackage_idを保持
+          };
+
+          newSelectedAVs.push(newAV);
+        }
+      }
+
+      setSelectedAVs(newSelectedAVs);
+
+      // チェックをクリア
+      setCheckedResults([]);
+      // モーダルを閉じる
+      setShowSearchModal(false);
+    } catch (error) {
+      console.error("選択アイテム追加エラー:", error);
+      alert("選択アイテムの追加中にエラーが発生しました。もう一度お試しください。");
+    }
   };
   
   // 選択済みAVを削除する関数
