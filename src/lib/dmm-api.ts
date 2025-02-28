@@ -209,6 +209,7 @@ export async function fetchDmmApi(
   // 必須パラメータを追加
   queryParams.append("api_id", API_ID);
   queryParams.append("affiliate_id", AFFILIATE_ID);
+  queryParams.append("ch", "search");
 
   // 検索パラメータを追加（値を文字列に変換）
   // キーワードや女優名などはすでにエンコード済みなので、そのまま追加する
@@ -281,10 +282,10 @@ export async function fetchDmmActressApi(
 
   // パラメータを URL クエリに変換（すべての値を文字列に変換）
   const queryParams = new URLSearchParams();
-
-  // 必須パラメータを追加
-  queryParams.append("api_id", API_ID);
-  queryParams.append("affiliate_id", AFFILIATE_ID);
+// 必須パラメータを追加
+queryParams.append("api_id", API_ID);
+queryParams.append("affiliate_id", AFFILIATE_ID);
+queryParams.append("ch", "search");
 
   // 検索パラメータを追加（値を文字列に変換）
   Object.entries(params).forEach(([key, value]) => {

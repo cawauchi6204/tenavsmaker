@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { searchByTitle, searchByActress, searchByKeyword } from "@/lib/dmm-api";
 
+// アフィリエイトIDを変更するヘルパー関数
+function replaceAffiliateId(url: string): string {
+  if (!url) return "";
+  // cawa-990をcawa-003に置き換え、chパラメータをsearchに設定
+  return url.replace(/af_id=cawa-990/g, "af_id=cawa-003").replace(/ch=api/g, "ch=search");
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -67,7 +74,7 @@ export async function GET(request: Request) {
           item.imageURL?.small ||
           item.imageURL?.list ||
           "",
-        fanza_url: item.affiliateURL || item.URL || "",
+        fanza_url: replaceAffiliateId(item.affiliateURL || item.URL || ""),
         actress: item.iteminfo?.actress?.map((a) => a.name).join(", ") || "",
         maker: item.iteminfo?.maker?.map((m) => m.name).join(", ") || "",
         date: item.date || "",
