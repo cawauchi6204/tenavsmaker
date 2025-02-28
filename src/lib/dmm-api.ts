@@ -222,7 +222,7 @@ export async function fetchDmmApi(
     // APIリクエストURLをログに出力
     const requestUrl = `${baseUrl}?${queryParams.toString()}`;
     console.log("DMM 商品検索 API リクエストURL:", requestUrl);
-    
+
     // API リクエスト
     const response = await fetch(requestUrl);
 
@@ -237,7 +237,7 @@ export async function fetchDmmApi(
     }
 
     const data = await response.json();
-    
+
     // レスポンスの概要をログに出力
     console.log(
       `DMM 商品検索 API レスポンス概要: status=${data.result?.status}, result_count=${data.result?.result_count}, total_count=${data.result?.total_count}`
@@ -252,7 +252,11 @@ export async function fetchDmmApi(
   } catch (error) {
     console.error("Error fetching DMM API:", error);
     // エラーをそのまま投げる
-    throw new Error(`DMM API request failed: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `DMM API request failed: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 }
 
@@ -293,7 +297,7 @@ export async function fetchDmmActressApi(
     // APIリクエストURLをログに出力
     const requestUrl = `${baseUrl}?${queryParams.toString()}`;
     console.log("DMM 女優検索 API リクエストURL:", requestUrl);
-    
+
     // API リクエスト
     const response = await fetch(requestUrl);
 
@@ -308,7 +312,7 @@ export async function fetchDmmActressApi(
     }
 
     const data = await response.json();
-    
+
     // レスポンスの概要をログに出力
     console.log(
       `DMM 女優検索 API レスポンス概要: status=${data.result?.status}, result_count=${data.result?.result_count}, total_count=${data.result?.total_count}`
@@ -323,7 +327,11 @@ export async function fetchDmmActressApi(
   } catch (error) {
     console.error("Error fetching DMM ActressSearch API:", error);
     // エラーをそのまま投げる
-    throw new Error(`DMM ActressSearch API request failed: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `DMM ActressSearch API request failed: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 }
 
@@ -346,7 +354,7 @@ export async function searchByTitle(
       service: "digital",
       floor: "videoa",
       hits: hits,
-      sort: "rank",
+      sort: "date",
       keyword: encodedKeyword,
       output: "json",
     });
@@ -373,87 +381,55 @@ export async function searchByActress(
   actressName: string,
   hits: number = 100
 ): Promise<DmmItem[]> {
+  let items: DmmItem[] = [];
   try {
     console.log(`女優名で検索: "${actressName}", 取得件数: ${hits}`);
     const encodedActressName = actressName;
+    console.log("🚀 ~ actressName:", actressName);
 
     // 方法1: ActressSearchエンドポイントを使用して女優情報を取得する
     console.log("方法1: ActressSearchエンドポイントを使用");
     try {
       const actressResponse = await fetchDmmActressApi({
         keyword: encodedActressName,
-        hits: 10,
+        hits: 100,
         output: "json",
       });
+
       if (
         actressResponse.result &&
         Array.isArray(actressResponse.result.actress) &&
         actressResponse.result.actress.length > 0
       ) {
         const firstActress = actressResponse.result.actress[0];
-        console.log(`女優情報: id=${firstActress.id}, name=${firstActress.name}`);
+        console.log(
+          `女優情報: id=${firstActress.id}, name=${firstActress.name}`
+        );
         // 商品検索に女優IDを使用
         const itemResponse = await fetchDmmApi({
           site: "FANZA",
           service: "digital",
           floor: "videoa",
           hits: hits,
-          sort: "rank",
-          actress: String(firstActress.id),
+          sort: "date",
           output: "json",
+          article: "actress",
+          article_id: String(firstActress.id),
         });
-        if (
-          itemResponse.result &&
-          Array.isArray(itemResponse.result.items) &&
-          itemResponse.result.items.length > 0
-        ) {
-          const sampleItems = itemResponse.result.items.slice(0, 2);
-          console.log(
-            `女優ID検索の結果サンプル (${sampleItems.length}件):`,
-            sampleItems.map((item) => ({
-              id: item.content_id,
-              title: item.title,
-              actress: item.iteminfo?.actress?.map((a) => a.name).join(", "),
-            }))
-          );
-          return itemResponse.result.items;
-        }
+        console.log("🚀 ~ itemResponse:", itemResponse);
+        items = itemResponse.result.items;
       }
       console.log("ActressSearchエンドポイントで結果が得られなかった");
+      return items;
     } catch (actressError) {
       console.error("女優検索APIでエラーが発生:", actressError);
+      // return [];
     }
-
-    // 方法2: 従来の方法でItemListエンドポイントを使用する
-    console.log("方法2: 従来の方法でItemListエンドポイントを使用");
-    const params = {
-      site: "FANZA",
-      service: "digital",
-      floor: "videoa",
-      hits: hits,
-      sort: "rank",
-      keyword: encodedActressName,
-      output: "json",
-    };
-    console.log("方法2: keywordパラメータを使用:", JSON.stringify(params));
-    const response = await fetchDmmApi(params);
-    if (response.result && Array.isArray(response.result.items)) {
-      const sampleItems = response.result.items.slice(0, 2);
-      console.log(
-        `方法2の結果サンプル (${sampleItems.length}件):`,
-        sampleItems.map((item) => ({
-          id: item.content_id,
-          title: item.title,
-          actress: item.iteminfo?.actress?.map((a) => a.name).join(", "),
-        }))
-      );
-      return response.result.items;
-    }
-    return [];
   } catch (error) {
     console.error("女優名での検索に失敗:", error);
     return [];
   }
+  return items;
 }
 
 /**
