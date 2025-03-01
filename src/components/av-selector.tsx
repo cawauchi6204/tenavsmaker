@@ -449,6 +449,7 @@ export default function AVSelector() {
               />
             </div>
           </div>
+          <p className="text-xs text-white mb-2">※1件からシェアできます</p>
           <button
             className="w-full py-3 bg-[#1da1f2] text-white rounded font-medium hover:bg-[#1a91da] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={selectedAVs.length === 0}

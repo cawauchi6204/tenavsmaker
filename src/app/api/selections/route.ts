@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
     // 新しいセレクションを作成
     const selection = await createSelection({
-      title: title || "名刺代わりのAV10選",
+      title: title || "名刺代わりのAV",
     });
 
     // 各AVをセレクションアイテムとして追加

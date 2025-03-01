@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
   ),
   title: {
-    default: "名刺代わりのAV10選メーカー",
-    template: "%s | 名刺代わりのAV10選メーカー",
+    default: "名刺代わりのAVメーカー",
+    template: "%s | 名刺代わりのAVメーカー",
   },
   description: "AVを10本選んで共有できます。",
   keywords: [
@@ -26,21 +26,21 @@ export const metadata: Metadata = {
     "10本選",
     "名刺代わり",
     "AV10選",
-    "名刺代わりのAV10選",
-    "名刺代わりのAV10選メーカー",
+    "名刺代わりのAV",
+    "名刺代わりのAVメーカー",
   ],
   authors: [{ name: "solopreneurtaro" }],
   openGraph: {
     type: "website",
-    siteName: "名刺代わりのAV10選メーカー",
-    title: "名刺代わりのAV10選メーカー",
+    siteName: "名刺代わりのAVメーカー",
+    title: "名刺代わりのAVメーカー",
     description: "あなたの好きなAVを10本選んで共有できます。",
     images: [defaultOgImage],
     locale: "ja_JP",
   },
   twitter: {
     card: "summary_large_image",
-    title: "名刺代わりのAV10選メーカー",
+    title: "名刺代わりのAVメーカー",
     description: "あなたの好きなAVを10本選んで共有できます。",
     images: [defaultOgImage],
     creator: "@solopreneurtaro",
@@ -72,7 +72,7 @@ export default function RootLayout({
           <header className="flex justify-center items-center text-center text-sm text-gray-500 py-4">
             <Link href="/">
               <h1 className="text-2xl text-center mb-4">
-                #名刺代わりのAV10選メーカー
+                #名刺代わりのAVメーカー
               </h1>
             </Link>
           </header>

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
         url: "/AV.png",
         width: 1200,
         height: 630,
-        alt: "名刺代わりのAV10選メーカー",
+        alt: "名刺代わりのAVメーカー",
       },
     ],
   },
