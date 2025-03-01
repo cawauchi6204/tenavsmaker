@@ -5,11 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "名刺代わりのAV10選メーカー",
-  description: "名刺代わりのAV10選メーカーです。",
+  title: "名刺代わりのAV選メーカー",
+  description: "名刺代わりのAV選メーカーです。",
   openGraph: {
-    title: "名刺代わりのAV10選メーカー",
-    description: "名刺代わりのAV10選メーカーです。",
+    title: "名刺代わりのAV選メーカー",
+    description: "名刺代わりのAV選メーカーです。",
     images: [
       {
         url: "/AV.png",
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "名刺代わりのAV10選メーカー",
-    description: "名刺代わりのAV10選メーカーです。",
+    title: "名刺代わりのAV選メーカー",
+    description: "名刺代わりのAV選メーカーです。",
     images: ["/AV.png"],
   },
   icons: {
@@ -43,7 +43,7 @@ export default async function Home() {
 
       {/* セレクションとそれに関連するAVパッケージを表示 */}
       <div className="max-w-[800px] mx-auto px-4 pb-8">
-        <p className="text-white">これまで作成された名刺代わりのAV10選</p>
+        <p className="text-white">これまで作成された名刺代わりのAV選</p>
         {selectionsWithItems.map((selectionWithItems) => (
           <div key={selectionWithItems.selection.id} className="mb-12">
             <div className="flex items-center justify-between mb-4">

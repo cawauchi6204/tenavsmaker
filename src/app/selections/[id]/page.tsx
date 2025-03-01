@@ -18,10 +18,10 @@ export async function generateMetadata({
 
   return {
     title: selection.title,
-    description: `${selection.title} - 名刺代わりのAV10選メーカー`,
+    description: `${selection.title} - 名刺代わりのAV選メーカー`,
     openGraph: {
       title: selection.title,
-      description: `${selection.title} - 名刺代わりのAV10選メーカー`,
+      description: `${selection.title} - 名刺代わりのAV選メーカー`,
       images: [{
         url: ogpImageUrl,
         width: 1200,
@@ -32,7 +32,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: selection.title,
-      description: `${selection.title} - 名刺代わりのAV10選メーカー`,
+      description: `${selection.title} - 名刺代わりのAV選メーカー`,
       images: [ogpImageUrl],
     },
   };

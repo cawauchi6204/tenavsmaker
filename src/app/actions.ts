@@ -50,7 +50,7 @@ export async function createSelection({
 }) {
   const [selection] = await sql`
     INSERT INTO selections (id, title, description)
-    VALUES (gen_random_uuid(), ${title ?? '名刺代わりのAV10選'}, ${description})
+    VALUES (gen_random_uuid(), ${title ?? "名刺代わりのAV選"}, ${description})
     RETURNING *;
   `;
   return selection;
@@ -85,11 +85,11 @@ export async function addSelectionItem({
  */
 export async function getSelectionItems(selectionId: string) {
   // キャッシュを使用せずに常に最新のデータを取得
-  const { revalidatePath } = await import('next/cache');
-  
+  const { revalidatePath } = await import("next/cache");
+
   // 選択肢の詳細ページのパスを再検証してキャッシュを無効化
   revalidatePath(`/selections/${selectionId}`);
-  
+
   const items = await sql`
     SELECT si.*, p.title AS package_title, p.image_url, p.fanza_url, p.description, p.sample_movie_url
     FROM selection_items si
@@ -102,11 +102,11 @@ export async function getSelectionItems(selectionId: string) {
 
 export async function getSelection(selectionId: string) {
   // キャッシュを使用せずに常に最新のデータを取得
-  const { revalidatePath } = await import('next/cache');
-  
+  const { revalidatePath } = await import("next/cache");
+
   // 選択肢の詳細ページのパスを再検証してキャッシュを無効化
   revalidatePath(`/selections/${selectionId}`);
-  
+
   const selection = await sql`
     SELECT * FROM selections WHERE id = ${selectionId}
   `;
@@ -115,11 +115,11 @@ export async function getSelection(selectionId: string) {
 
 export async function getRecentSelections() {
   // キャッシュを使用せずに常に最新のデータを取得
-  const { revalidatePath } = await import('next/cache');
-  
+  const { revalidatePath } = await import("next/cache");
+
   // 現在のパスを再検証してキャッシュを無効化
-  revalidatePath('/');
-  
+  revalidatePath("/");
+
   const selections = await sql`
     SELECT * FROM selections
     ORDER BY created_at DESC
@@ -134,21 +134,21 @@ export async function getRecentSelections() {
  */
 export async function getRecentSelectionsWithItems() {
   // キャッシュを使用せずに常に最新のデータを取得
-  const { revalidatePath } = await import('next/cache');
-  
+  const { revalidatePath } = await import("next/cache");
+
   // 現在のパスを再検証してキャッシュを無効化
-  revalidatePath('/');
-  
+  revalidatePath("/");
+
   // 最近のセレクションを取得（最大10件）
   const selections = await sql`
     SELECT * FROM selections
     ORDER BY created_at DESC
     LIMIT 10;
   `;
-  
+
   // 各セレクションに関連するアイテムを取得
   const result = [];
-  
+
   for (const selection of selections) {
     // 各セレクションに関連するアイテムを最大5つ取得
     const items = await sql`
@@ -159,13 +159,13 @@ export async function getRecentSelectionsWithItems() {
       ORDER BY si.item_order
       LIMIT 5;
     `;
-    
+
     // セレクションとそのアイテムをオブジェクトにまとめる
     result.push({
       selection,
-      items
+      items,
     });
   }
-  
+
   return result;
 }

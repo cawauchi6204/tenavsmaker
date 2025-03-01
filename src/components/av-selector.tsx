@@ -45,7 +45,7 @@ export default function AVSelector() {
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [commentTargetAV, setCommentTargetAV] = useState<AV | null>(null);
   const [commentText, setCommentText] = useState("");
-  const [shareTitle, setShareTitle] = useState("名刺代わりのAV10選");
+  const [shareTitle, setShareTitle] = useState("名刺代わりのAV選");
   // チェックされた検索結果を追跡するステート
   const [checkedResults, setCheckedResults] = useState<string[]>([]);
 
@@ -142,7 +142,7 @@ export default function AVSelector() {
       const baseText = `#${shareTitle}`;
       const selectionUrl = `${window.location.origin}/selections/${data.selection.id}`;
       const shareText = encodeURIComponent(
-        `${baseText}\n${selectionUrl}\n\n#名刺代わりのAV10選メーカー`
+        `${baseText}\n${selectionUrl}\n\n#名刺代わりのAV選メーカー`
       );
       window.open(
         `https://twitter.com/intent/tweet?text=${shareText}`,
@@ -158,7 +158,7 @@ export default function AVSelector() {
     setSelectedAVs([]);
     setCurrentSlide(0);
     setSearchTerm("");
-    setShareTitle("名刺代わりのAV10選");
+    setShareTitle("名刺代わりのAV選");
   };
 
   // 1ページあたりの表示数を定義
@@ -451,10 +451,10 @@ export default function AVSelector() {
           </div>
           <button
             className="w-full py-3 bg-[#1da1f2] text-white rounded font-medium hover:bg-[#1a91da] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={selectedAVs.length !== 10}
+            disabled={selectedAVs.length === 0}
             onClick={handleShare}
           >
-            twitterでシェア
+            Twitterでシェア
           </button>
         </div>
 
